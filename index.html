@@ -343,8 +343,8 @@ input[type=checkbox]:checked:after {
 
 @media (max-width:750px) {
 	.bg {
-		min-width: 25%;
-		min-height: 25%;
+		min-width: 10%;
+		min-height: 10%;
 	}
 	input[type=checkbox]:before {
 		width: 14px;
@@ -353,16 +353,18 @@ input[type=checkbox]:checked:after {
 		left: 1px;
 	}
 	input[type=checkbox]:checked:after {
-		width: 12px;
-		height: 12px;
+		width: 14px;
+		height: 14px;
 		top: 1px;
 		left: 1px;
 	}
 	.tooltip {
-		white-space: normal;
+		white-space: pre-line;
+		bottom: 100%;
 	}
 	.tooltip2 {
-		white-space: normal;
+		white-space: pre-wrap;
+		bottom: 100%;
 	}
 }
 
