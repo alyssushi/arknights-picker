@@ -6,12 +6,12 @@
 <style>
 
 body {
-    background:#403f45;
-    color:#e2dff0;
-    font-family:verdana, sans-serif;
-    font-size:10pt;
-    margin:0;
-    padding:20px;
+    	background:#403f45;
+    	color:#e2dff0;
+    	font-family:verdana, sans-serif;
+    	font-size:10pt;
+    	margin:0;
+    	padding:20px;
 	z-index:2
 }
 
@@ -32,20 +32,20 @@ body {
 }
 
 .footer {
-	position:fixed;
+	position:relative;
 	top: 45px;
 	right: 25px;
 	color: #878c99;
 }
 
 a:link, a:visited {
-    color:#5daac7;
-    font-weight:bold;
-    text-decoration:none;
+    	color:#5daac7;
+    	font-weight:bold;
+    	text-decoration:none;
 }
 
 a:active, a:hover {
-    color:#ACF;
+    	color:#ACF;
 }
 
 .explain {
@@ -95,39 +95,39 @@ a:active, a:hover {
 }
 
 .info {
-    font-weight:bold;
+    	font-weight:bold;
 }
 
 button {
-    font-family:inherit;
-    cursor:pointer;
-    border:0;
-    border-radius:3px;
-    padding:0.3em 0.5em;
-    background:#CCC;
-    color:#000;
+    	font-family:inherit;
+    	cursor:pointer;
+    	border:0;
+    	border-radius:3px;
+    	padding:0.3em 0.5em;
+    	background:#CCC;
+    	color:#000;
 }
 
 button:hover {
-    background:#DDD;
+    	background:#DDD;
 }
 
 button.disabled {
-    background:#DDD;
-    color:#888;
-    cursor:not-allowed;
+    	background:#DDD;
+    	color:#888;
+    	cursor:not-allowed;
 }
 
 button.disabled:hover {
-    background:#DDD;
+    	background:#DDD;
 }
 
 #container {
-    position:relative;
-    margin-left:-10px;
-    margin-right:-10px;
-    padding:10px;
-    overflow:hidden;
+    	position:relative;
+    	margin-left:-10px;
+    	margin-right:-10px;
+    	padding:10px;
+	overflow:hidden;
 }
 
 @media (min-width:1024px) {
@@ -135,12 +135,12 @@ button.disabled:hover {
     #picking {
         float:left;
         width:636px;
-		margin-top: 10px;
+	margin-top: 10px;
     }
 
     #secondary {
         margin-left:646px;
-		margin-top: -10px;
+	margin-top: -10px;
     }
 }
 
@@ -148,66 +148,66 @@ button.disabled:hover {
     /* Once we get to the point where 636px is less than half of the width of the screen, make the picking div just take up half */
     #picking {
         width:50%;
-		margin-top: 10px;
+	margin-top: 10px;
     }
 
     #secondary {
         margin-left:51%;
-		margin-top: -10px;
+	margin-top: -10px;
     }
 }
 
 #pick {
-    background:#5daac7;
-    color:#FFF;
-    font-size:larger;
-    font-weight:bold;
-    width:6em;
-    border-radius:5px;
-    margin-right:10px;
+    	background:#5daac7;
+    	color:#FFF;
+    	font-size:larger;
+    	font-weight:bold;
+    	width:6em;
+    	border-radius:5px;
+    	margin-right:10px;
 	margin-bottom: 15px;
 }
 
 #pick.disabled {
-    background:#ACF;
+    	background:#ACF;
 }
 
 #pick:hover {
-    background:#4f789e;
+    	background:#4f789e;
 }
 
 .item-list {
-    padding:0;
-    list-style-type:none;
-    line-height:100px;
+    	padding:0;
+    	list-style-type:none;
+    	line-height:100px;
 }
 
 .item-list li {
-    margin:3px;
-    display:inline-block;
-    height:100px;
-    width:100px;
-    line-height:100px;
-    border:3px solid transparent;
-    text-align:center;
-    position:relative;
-    vertical-align:top;
-    overflow:hidden;
-    border-radius:10%;
-    background:#c2c1c9;
-    color:#000;
+    	margin:3px;
+    	display:inline-block;
+    	height:100px;
+    	width:100px;
+    	line-height:100px;
+    	border:3px solid transparent;
+    	text-align:center;
+    	position:relative;
+    	vertical-align:top;
+    	overflow:hidden;
+    	border-radius:10%;
+    	background:#c2c1c9;
+    	color:#000;
 }
 
 .item-list li img {
-    vertical-align:middle;
-    max-height:100%;
-    max-width:100%;
+    	vertical-align:middle;
+    	max-height:100%;
+    	max-width:100%;
 }
 
 .item-list li span {
-    display:inline-block;
-    vertical-align:middle;
-    line-height:1.2;
+    	display:inline-block;
+    	vertical-align:middle;
+    	line-height:1.2;
 }
 
 @media (max-width:636px) {
@@ -235,83 +235,83 @@ button.disabled:hover {
 }
 
 #evaluating li {
-    cursor:pointer;
+    	cursor:pointer;
 }
 
 #favorites li {
-    cursor:move;
+    	cursor:move;
 }
 
 .item-list li:hover {
-    background:#CDF;
+    	background:#CDF;
 }
 
 .item-list.sorting li:hover {
-    background:#F7F7F7;
+    	background:#F7F7F7;
 }
 
 #evaluating li.selected {
-    border:3px solid #92d4f0;
+    	border:3px solid #92d4f0;
 	background: #dce6f7;
 }
 
 #evaluating, #buttons {
-    text-align:center;
-    margin:auto;
+    	text-align:center;
+    	margin:auto;
 }
 
 #evaluating li.notice {
-    width:auto;
-    height:auto;
-    max-width:260px;
-    margin:auto;
-    background:#F7F7F7;
-    border-radius:10px;
-    padding:30px 30px;
-    color:#000;
-    text-align:center;
-    line-height:1.4;
-    cursor:auto;
-    font-size:10pt;
+    	width:auto;
+    	height:auto;
+    	max-width:260px;
+    	margin:auto;
+    	background:#F7F7F7;
+    	border-radius:10px;
+    	padding:30px 30px;
+    	color:#000;
+    	text-align:center;
+    	line-height:1.4;
+    	cursor:auto;
+    	font-size:10pt;
 }
 
 #buttons {
-    margin-top:10px;
-    position:relative;
-    z-index:3;
+    	margin-top:10px;
+    	position:relative;
+    	z-index:3;
 }
 
 input[type=checkbox] {
-    position: relative;
+    	position: relative;
 	cursor: pointer;
 }
 input[type=checkbox]:before {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    top: 0;
-    left: 0;
-    border-radius: 3px;
-    background-color: white;
+    	content: "";
+    	display: block;
+    	position: absolute;
+    	width: 12px;
+    	height: 12px;
+    	top: 0;
+    	left: 0;
+    	border-radius: 3px;
+    	background-color: white;
 }
 input[type=checkbox]:checked:after {
-    content: "";
-    display: block;
-    width: 12px;
-    height: 12px;
+    	content: "";
+    	display: block;
+    	width: 12px;
+    	height: 12px;
 	background-color: #5daac7;
-    position: absolute;
-    top: 0;
-    left: 0;
+    	position: absolute;
+    	top: 0;
+    	left: 0;
 	border-radius:3px;
 }
 
 .content {
-  padding: 0 18px;
-  display: none;
-  overflow: hidden;
+  	padding: 0 18px;
+  	display: none;
+  	overflow: hidden;
 }
 
 .toggle {
@@ -320,12 +320,12 @@ input[type=checkbox]:checked:after {
 
 .lbl-toggle {
 	font-family:inherit;
-    cursor:pointer;
-    border:0;
-    border-radius:3px;
-    padding:0.3em 0.5em;
-    background:#CCC;
-    color:#000;
+    	cursor:pointer;
+    	border:0;
+    	border-radius:3px;
+    	padding:0.3em 0.5em;
+    	background:#CCC;
+    	color:#000;
 }
 
 .lbl-toggle:hover {
@@ -367,6 +367,12 @@ input[type=checkbox]:checked:after {
 	.explain .tooltip2 {
 		white-space: normal;
 		bottom: 100%;
+	}
+	.footer {
+		top: 60px;	
+	}
+	.weird-line {
+		visibility: hidden;	
 	}
 }
 
@@ -426,7 +432,7 @@ function toggle2(source) {
 <label><input type="checkbox" name="ranks" class="ranks" value="npc"> NPC</label>
 </p>
 <p>
-<label class="explain">Include CN-exclusive operators? <input type="checkbox" id="cn-exclusive">  |  </label>
+<label class="explain">Include CN-exclusive operators? <input type="checkbox" id="cn-exclusive"><span class="weird-line">  |  </span></label>
 <label class="explain">Include alternate forms? <input type="checkbox" id="alter"></label>
 </p>
 <div class="wrap-collapsible">
