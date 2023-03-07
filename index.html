@@ -97,6 +97,26 @@ a:active, a:hover {
 	visibility: visible;
 }
 
+.explain .tooltip3 {
+	visibility: hidden;
+	font-size:9pt;
+	color: #FFF;
+	background-color: #000;
+	padding:4px 8px;
+	border-radius: 3px;
+	z-index: 5;
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	opacity: 0.8;
+	white-space: nowrap;
+	text-align: center;
+}
+
+.explain:hover .tooltip3{
+	visibility: visible;
+}
+
 .info {
     	font-weight:bold;
 }
@@ -130,7 +150,7 @@ button.disabled:hover {
     	margin-left:-10px;
     	margin-right:-10px;
     	padding:10px;
-	overflow:hidden;
+		overflow:hidden;
 }
 
 @media (min-width:1024px) {
@@ -168,7 +188,7 @@ button.disabled:hover {
     	width:6em;
     	border-radius:5px;
     	margin-right:10px;
-	margin-bottom: 15px;
+		margin-bottom: 15px;
 }
 
 #pick.disabled {
@@ -380,7 +400,21 @@ input[type=checkbox]:checked:after {
 	}
 	.name {
 		bottom: 23px;
+		
 	}
+}
+
+.notice {
+	color: #79e2ed;
+	text-align: center;
+}
+
+.secret {
+	opacity: 0.05;
+}
+
+.secret input{
+	opacity: 0.3;
 }
 
 </style>
@@ -393,6 +427,8 @@ input[type=checkbox]:checked:after {
 </div>
 
 <div class="top-info">
+<div class="notice"><p><i>Currently functional and includes all operators, but <b>NPCs have yet to be added</b>. Stay tuned...</i></p></div>
+
 <p>This tool will present you with a few characters at a time for you to choose your favorite from. (You can also choose multiple at a time.) Once you've made your selection, press Pick to move to the next round. If you aren't sure, you can also pass the round. However, passing doesn't provide any new information, so passing repeatedly won't get you anywhere.</p>
 
 <p>You can keep picking after a favorite is found to build a list of favorites as long as you like. Since the process works via elimination, characters should show up under Favorite Characters in descending order, starting with your top favorite character. (This also means that if you keep picking until no characters are left, you'll end up with a ranking list similar to a <a href="https://ak-sorter.tumblr.com/">character sorter</a>.)</p>
@@ -440,7 +476,8 @@ function toggle2(source) {
 <label><input type="checkbox" name="ranks" class="ranks" value="four"> 4*</label>
 <label><input type="checkbox" name="ranks" class="ranks" value="five"> 5*</label>
 <label><input type="checkbox" name="ranks" class="ranks" value="six"> 6*</label>
-<label><input type="checkbox" name="ranks" class="ranks" value="npc"> NPC</label>
+<label class="explain"><input type="checkbox" name="ranks" class="ranks" value="npc1"> NPC (main)</label>
+<label class="explain"><input type="checkbox" name="ranks" class="ranks" value="npc2"> NPC (side)</label>
 </p>
 <p>
 <label class="explain">Include CN-exclusive operators? <input type="checkbox" id="cn-exclusive"><span class="weird-line">  |  </span></label>
@@ -450,7 +487,7 @@ function toggle2(source) {
 	<input id="collapsible" class="toggle" type="checkbox">
 	<label for="collapsible" class="lbl-toggle">More Filters</label>
 <div class="content">
-<p><b>Race</b>:   (<label class="explain"><input type="checkbox" onClick="toggle(this)" /> Toggle All)<span class="tooltip">Note: After using this, select/deselect a filter manually to apply your changes.</span></label><br>
+<p><span class="explain"><b>Race</b><span class="tooltip3">only races with 4+ total characters are included</span></span>:   (<label class="explain"><input type="checkbox" onClick="toggle(this)" /> Toggle All)<span class="tooltip3">Note: After using this, select/deselect a filter manually to apply your changes.</span></label><br>
 <label class="explain"><input type="checkbox" name="races" class="races" value="aegir">Aegir<span class="tooltip">sea creatures</span></label>
 <label class="explain"><input type="checkbox" name="races" class="races" value="anaty">Anaty<span class="tooltip">musteloids</span></label>
 <label class="explain"><input type="checkbox" name="races" class="races" value="archosauria">Archosauria<span class="tooltip">crocodilians</span></label>
@@ -480,7 +517,7 @@ function toggle2(source) {
 <label class="explain"><input type="checkbox" name="races" class="races" value="unknown">Unknown<span class="tooltip">also includes collab characters</span></label>
 <label class="explain"><input type="checkbox" name="races" class="races" value="other">Other<span class="tooltip">Anasa, Anura, Aslan, Cerato, Elf, Itra, Kylin, Manticore, Petram, Pilosa, Robot</span></label>
 </p>
-<p><b>Faction</b>:   (<label class="explain"><input type="checkbox" onClick="toggle2(this)" /> Toggle All)<span class="tooltip">Note: After using this, select/deselect a filter manually to apply your changes.</span></label><br>
+<p><b>Faction</b>:   (<label class="explain"><input type="checkbox" onClick="toggle2(this)" /> Toggle All)<span class="tooltip3">Note: After using this, select/deselect a filter manually to apply your changes.</span></label><br>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="aegir">Aegir<span class="tooltip">includes Abyssal Hunters</span></label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="babel">Babel</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="bolivar">Bolívar</label>
@@ -504,6 +541,12 @@ function toggle2(source) {
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="yan">Yan<span class="tooltip">includes Sui</span></label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="other">Unknown/Other</label>
 </p>
+<p>
+<label class="explain">Include collab operators? <input type="checkbox" id="collab"><span class="tooltip">excludes collab-based alternate forms for existing characters</span></label>
+</p>
+<div class="secret"><p>
+<label>??? <input type="checkbox" id="octo"></label>
+</p></div>
 </div>
 </div>
 </div>
@@ -523,90 +566,307 @@ function toggle2(source) {
 'use strict';
 
 var items = [
-	{id: 'lancet', name: 'Lancet-2', image: 'images/three/lancet.png', gender: 'female', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false},
-	{id: 'castle', name: 'Castle-3', image: 'images/three/castle.png', gender: 'male', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false},
-	{id: 'thermal', name: 'THRM-EX', image: 'images/three/thermal.png', gender: 'male', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false},
-	{id: 'justice', name: 'Justice Knight', image: 'images/three/justice.png', gender: 'female', cn: false, race: 'other', faction: 'kazimierz', rank: 'one', alter: false},
-	{id: 'terra', name: 'Terra Research Commission', image: 'images/three/terra.png', gender: 'other', cn: true, race: 'unknown', faction: 'other', rank: 'one', alter: false},
 	
-	{id: 'yato', name: 'Yato', image: 'images/three/yato.png', gender: 'female', cn: false, race: 'oni', faction: 'rhodes', rank: 'two', alter: false},
-	{id: 'durin', name: 'Durin', image: 'images/three/durin.png', gender: 'female', cn: false, race: 'durin', faction: 'rhodes', rank: 'two', alter: false},
-	{id: '12f', name: '12F', image: 'images/three/12f.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'two', alter: false},
-	{id: 'rangers', name: 'Rangers', image: 'images/three/rangers.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'two', alter: false},
-	{id: 'noir', name: 'Noir Corne', image: 'images/three/noir.png', gender: 'male', cn: false, race: 'oni', faction: 'rhodes', rank: 'two', alter: false},
+	/* one star */
+	{id: 'lancet', name: 'Lancet-2', image: 'images/three/lancet.png', gender: 'female', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false, collab: false},
+	{id: 'castle', name: 'Castle-3', image: 'images/three/castle.png', gender: 'male', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false, collab: false},
+	{id: 'thermal', name: 'THRM-EX', image: 'images/three/thermal.png', gender: 'male', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false, collab: false},
+	{id: 'justice', name: 'Justice Knight', image: 'images/three/justice.png', gender: 'female', cn: false, race: 'other', faction: 'kazimierz', rank: 'one', alter: false, collab: false},
+	{id: 'terra', name: 'Terra Research Commission', image: 'images/three/terra.png', gender: 'other', cn: true, race: 'unknown', faction: 'other', rank: 'one', alter: false, collab: true},
+	
+	/* two star */
+	{id: 'yato', name: 'Yato', image: 'images/three/yato.png', gender: 'female', cn: false, race: 'oni', faction: 'rhodes', rank: 'two', alter: false, collab: false},
+	{id: 'durin', name: 'Durin', image: 'images/three/durin.png', gender: 'female', cn: false, race: 'durin', faction: 'rhodes', rank: 'two', alter: false, collab: false},
+	{id: '12f', name: '12F', image: 'images/three/12f.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'two', alter: false, collab: false},
+	{id: 'rangers', name: 'Rangers', image: 'images/three/rangers.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'two', alter: false, collab: false},
+	{id: 'noir', name: 'Noir Corne', image: 'images/three/noir.png', gender: 'male', cn: false, race: 'oni', faction: 'rhodes', rank: 'two', alter: false, collab: false},
 
-	{id: 'adnachiel', name: 'Adnachiel', image: 'images/three/adnachiel.png', gender: 'male', cn: false, race: 'sankta', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'ansel', name: 'Ansel', image: 'images/three/ansel.png', gender: 'male', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'beagle', name: 'Beagle', image: 'images/three/beagle.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'cardigan', name: 'Cardigan', image: 'images/three/cardigan.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'catapult', name: 'Catapult', image: 'images/three/catapult.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'fang', name: 'Fang', image: 'images/three/fang.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'hibiscus', name: 'Hibiscus', image: 'images/three/hibiscus.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'kroos', name: 'Kroos', image: 'images/three/kroos.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'lava', name: 'Lava', image: 'images/three/lava.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'melantha', name: 'Melantha', image: 'images/three/melantha.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'midnight', name: 'Midnight', image: 'images/three/midnight.png', gender: 'male', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'orchid', name: 'Orchid', image: 'images/three/orchid.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'plume', name: 'Plume', image: 'images/three/plume.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'popukar', name: 'Popukar', image: 'images/three/popukar.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'spot', name: 'Spot', image: 'images/three/spot.png', gender: 'male', cn: false, race: 'rebbah', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'steward', name: 'Steward', image: 'images/three/steward.png', gender: 'male', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'three', alter: false},
-	{id: 'vanilla', name: 'Vanilla', image: 'images/three/vanilla.png', gender: 'female', cn: false, race: 'vouivre', faction: 'rhodes', rank: 'three', alter: false},
+	/* three star */
+	{id: 'adnachiel', name: 'Adnachiel', image: 'images/three/adnachiel.png', gender: 'male', cn: false, race: 'sankta', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'ansel', name: 'Ansel', image: 'images/three/ansel.png', gender: 'male', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'beagle', name: 'Beagle', image: 'images/three/beagle.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'cardigan', name: 'Cardigan', image: 'images/three/cardigan.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'catapult', name: 'Catapult', image: 'images/three/catapult.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'fang', name: 'Fang', image: 'images/three/fang.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'hibiscus', name: 'Hibiscus', image: 'images/three/hibiscus.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'kroos', name: 'Kroos', image: 'images/three/kroos.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'lava', name: 'Lava', image: 'images/three/lava.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'melantha', name: 'Melantha', image: 'images/three/melantha.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'midnight', name: 'Midnight', image: 'images/three/midnight.png', gender: 'male', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'orchid', name: 'Orchid', image: 'images/three/orchid.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'plume', name: 'Plume', image: 'images/three/plume.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'popukar', name: 'Popukar', image: 'images/three/popukar.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'spot', name: 'Spot', image: 'images/three/spot.png', gender: 'male', cn: false, race: 'rebbah', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'steward', name: 'Steward', image: 'images/three/steward.png', gender: 'male', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'vanilla', name: 'Vanilla', image: 'images/three/vanilla.png', gender: 'female', cn: false, race: 'vouivre', faction: 'rhodes', rank: 'three', alter: false, collab: false},
 	
-	{id: 'courier', name: 'Courier', image: 'images/four/courier.png', gender: 'male', cn: false, race: 'other', faction: 'kjerag', rank: 'four', alter: false},
-	{id: 'scavenger', name: 'Scavenger', image: 'images/four/scavenger.png', gender: 'female', cn: false, race: 'zalak', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'vigna', name: 'Vigna', image: 'images/four/vigna.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'myrrh', name: 'Myrrh', image: 'images/four/myrrh.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'gavial', name: 'Gavial', image: 'images/four/gavial.png', gender: 'female', cn: false, race: 'archosauria', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'perfumer', name: 'Perfumer', image: 'images/four/perfumer.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'haze', name: 'Haze', image: 'images/four/haze.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'four', alter: false},
-	{id: 'gitano', name: 'Gitano', image: 'images/four/gitano.png', gender: 'female', cn: false, race: 'elafia', faction: 'sami', rank: 'four', alter: false},
-	{id: 'gravel', name: 'Gravel', image: 'images/four/gravel.png', gender: 'female', cn: false, race: 'zalak', faction: 'kazimierz', rank: 'four', alter: false},
-	{id: 'rope', name: 'Rope', image: 'images/four/rope.png', gender: 'female', cn: false, race: 'cautus', faction: 'lungmen', rank: 'four', alter: false},
-	{id: 'shaw', name: 'Shaw', image: 'images/four/shaw.png', gender: 'female', cn: false, race: 'zalak', faction: 'lungmen', rank: 'four', alter: false},
-	{id: 'shirayuki', name: 'Shirayuki', image: 'images/four/shirayuki.png', gender: 'female', cn: false, race: 'anaty', faction: 'higashi', rank: 'four', alter: false},
-	{id: 'meteor', name: 'Meteor', image: 'images/four/meteor.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'four', alter: false},
-	{id: 'jessica', name: 'Jessica', image: 'images/four/jessica.png', gender: 'female', cn: false, race: 'feline', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'deepcolor', name: 'Deepcolor', image: 'images/four/deepcolor.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'four', alter: false},
-	{id: 'earthspirit', name: 'Earthspirit', image: 'images/four/earthspirit.png', gender: 'female', cn: false, race: 'caprinae', faction: 'leithanien', rank: 'four', alter: false},
-	{id: 'dobermann', name: 'Dobermann', image: 'images/four/dobermann.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'estelle', name: 'Estelle', image: 'images/four/estelle.png', gender: 'female', cn: false, race: 'archosauria', faction: 'sargon', rank: 'four', alter: false},
-	{id: 'beehunter', name: 'Beehunter', image: 'images/four/beehunter.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'four', alter: false},
-	{id: 'mousse', name: 'Mousse', image: 'images/four/mousse.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'four', alter: false},
-	{id: 'frostleaf', name: 'Frostleaf', image: 'images/four/frostleaf.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'matoimaru', name: 'Matoimaru', image: 'images/four/matoimaru.png', gender: 'female', cn: false, race: 'oni', faction: 'higashi', rank: 'four', alter: false},
-	{id: 'cuora', name: 'Cuora', image: 'images/four/cuora.png', gender: 'female', cn: false, race: 'other', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'gummy', name: 'Gummy', image: 'images/four/gummy.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'four', alter: false},
-	{id: 'matterhorn', name: 'Matterhorn', image: 'images/four/matterhorn.png', gender: 'male', cn: false, race: 'forte', faction: 'kjerag', rank: 'four', alter: false},
+	/* four star release */
+	{id: 'courier', name: 'Courier', image: 'images/four/courier.png', gender: 'male', cn: false, race: 'other', faction: 'kjerag', rank: 'four', alter: false, collab: false},
+	{id: 'scavenger', name: 'Scavenger', image: 'images/four/scavenger.png', gender: 'female', cn: false, race: 'zalak', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'vigna', name: 'Vigna', image: 'images/four/vigna.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'myrrh', name: 'Myrrh', image: 'images/four/myrrh.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'gavial', name: 'Gavial', image: 'images/four/gavial.png', gender: 'female', cn: false, race: 'archosauria', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'perfumer', name: 'Perfumer', image: 'images/four/perfumer.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'haze', name: 'Haze', image: 'images/four/haze.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'four', alter: false, collab: false},
+	{id: 'gitano', name: 'Gitano', image: 'images/four/gitano.png', gender: 'female', cn: false, race: 'elafia', faction: 'sami', rank: 'four', alter: false, collab: false},
+	{id: 'gravel', name: 'Gravel', image: 'images/four/gravel.png', gender: 'female', cn: false, race: 'zalak', faction: 'kazimierz', rank: 'four', alter: false, collab: false},
+	{id: 'rope', name: 'Rope', image: 'images/four/rope.png', gender: 'female', cn: false, race: 'cautus', faction: 'lungmen', rank: 'four', alter: false, collab: false},
+	{id: 'shaw', name: 'Shaw', image: 'images/four/shaw.png', gender: 'female', cn: false, race: 'zalak', faction: 'lungmen', rank: 'four', alter: false, collab: false},
+	{id: 'shirayuki', name: 'Shirayuki', image: 'images/four/shirayuki.png', gender: 'female', cn: false, race: 'anaty', faction: 'higashi', rank: 'four', alter: false, collab: false},
+	{id: 'meteor', name: 'Meteor', image: 'images/four/meteor.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'four', alter: false, collab: false},
+	{id: 'jessica', name: 'Jessica', image: 'images/four/jessica.png', gender: 'female', cn: false, race: 'feline', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'deepcolor', name: 'Deepcolor', image: 'images/four/deepcolor.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'four', alter: false, collab: false},
+	{id: 'earthspirit', name: 'Earthspirit', image: 'images/four/earthspirit.png', gender: 'female', cn: false, race: 'caprinae', faction: 'leithanien', rank: 'four', alter: false, collab: false},
+	{id: 'dobermann', name: 'Dobermann', image: 'images/four/dobermann.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'estelle', name: 'Estelle', image: 'images/four/estelle.png', gender: 'female', cn: false, race: 'archosauria', faction: 'sargon', rank: 'four', alter: false, collab: false},
+	{id: 'beehunter', name: 'Beehunter', image: 'images/four/beehunter.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'four', alter: false, collab: false},
+	{id: 'mousse', name: 'Mousse', image: 'images/four/mousse.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'four', alter: false, collab: false},
+	{id: 'frostleaf', name: 'Frostleaf', image: 'images/four/frostleaf.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'matoimaru', name: 'Matoimaru', image: 'images/four/matoimaru.png', gender: 'female', cn: false, race: 'oni', faction: 'higashi', rank: 'four', alter: false, collab: false},
+	{id: 'cuora', name: 'Cuora', image: 'images/four/cuora.png', gender: 'female', cn: false, race: 'other', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'gummy', name: 'Gummy', image: 'images/four/gummy.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'four', alter: false, collab: false},
+	{id: 'matterhorn', name: 'Matterhorn', image: 'images/four/matterhorn.png', gender: 'male', cn: false, race: 'forte', faction: 'kjerag', rank: 'four', alter: false, collab: false},
 	
-	{id: 'greyy', name: 'Greyy', image: 'images/four/greyy.png', gender: 'male', cn: false, race: 'perro', faction: 'bolivar', rank: 'four', alter: false},
-	{id: 'sussurro', name: 'Sussurro', image: 'images/four/sussurro.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'myrtle', name: 'Myrtle', image: 'images/four/myrtle.png', gender: 'female', cn: false, race: 'durin', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'durnar', name: 'Dur-nar', image: 'images/four/durnar.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'vermeil', name: 'Vermeil', image: 'images/four/vermeil.png', gender: 'female', cn: false, race: 'vulpo', faction: 'siracusa', rank: 'four', alter: false},
-	{id: 'ethan', name: 'Ethan', image: 'images/four/ethan.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'may', name: 'May', image: 'images/four/may.png', gender: 'female', cn: false, race: 'liberi', faction: 'victoria', rank: 'four', alter: false},
-	{id: 'ambriel', name: 'Ambriel', image: 'images/four/ambriel.png', gender: 'female', cn: false, race: 'sankta', faction: 'laterano', rank: 'four', alter: false},
-	{id: 'purestream', name: 'Purestream', image: 'images/four/purestream.png', gender: 'female', cn: false, race: 'aegir', faction: 'yan', rank: 'four', alter: false},
-	{id: 'utage', name: 'Utage', image: 'images/four/utage.png', gender: 'female', cn: false, race: 'unknown', faction: 'higashi', rank: 'four', alter: false},
-	{id: 'conviction', name: 'Conviction', image: 'images/four/conviction.png', gender: 'other', cn: false, race: 'liberi', faction: 'minos', rank: 'four', alter: false},
-	{id: 'cutter', name: 'Cutter', image: 'images/four/cutter.png', gender: 'female', cn: false, race: 'vulpo', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'podenco', name: 'Podenco', image: 'images/four/podenco.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'click', name: 'Click', image: 'images/four/click.png', gender: 'female', cn: false, race: 'zalak', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'jaye', name: 'Jaye', image: 'images/four/jaye.png', gender: 'male', cn: false, race: 'ursus', faction: 'lungmen', rank: 'four', alter: false},
-	{id: 'aciddrop', name: 'Aciddrop', image: 'images/four/aciddrop.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'arene', name: 'Arene', image: 'images/four/arene.png', gender: 'male', cn: false, race: 'sankta', faction: 'laterano', rank: 'four', alter: false},
-	{id: 'bubble', name: 'Bubble', image: 'images/four/bubble.png', gender: 'female', cn: false, race: 'other', faction: 'sargon', rank: 'four', alter: false},
-	{id: 'jackie', name: 'Jackie', image: 'images/four/jackie.png', gender: 'female', cn: false, race: 'perro', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'pinecone', name: 'Pinecone', image: 'images/four/pinecone.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'beanstalk', name: 'Beanstalk', image: 'images/four/beanstalk.png', gender: 'female', cn: false, race: 'rebbah', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'indigo', name: 'Indigo', image: 'images/four/indigo.png', gender: 'female', cn: false, race: 'pythia', faction: 'iberia', rank: 'four', alter: false},
-	{id: 'roberta', name: 'Roberta', image: 'images/four/roberta.png', gender: 'female', cn: false, race: 'anaty', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'pudding', name: 'Pudding', image: 'images/four/pudding.png', gender: 'female', cn: false, race: 'aegir', faction: 'columbia', rank: 'four', alter: false},
-	{id: 'chestnut', name: 'Chestnut', image: 'images/four/chestnut.png', gender: 'male', cn: false, race: 'durin', faction: 'rhodes', rank: 'four', alter: false},
-	{id: 'xiaohei', name: 'Luo Xiaohei', image: 'images/four/xiaohei.png', gender: 'male', cn: true, race: 'feline', faction: 'yan', rank: 'four', alter: false},
-	{id: 'totter', name: 'Totter', image: 'images/four/totter.png', gender: 'male', cn: true, race: 'liberi', faction: 'sargon', rank: 'four', alter: false},
-	{id: 'quartz', name: 'Quartz', image: 'images/four/quartz.png', gender: 'female', cn: true, race: 'lupo', faction: 'columbia', rank: 'four', alter: false},
+	/* four star post-release */
+	{id: 'greyy', name: 'Greyy', image: 'images/four/greyy.png', gender: 'male', cn: false, race: 'perro', faction: 'bolivar', rank: 'four', alter: false, collab: false},
+	{id: 'sussurro', name: 'Sussurro', image: 'images/four/sussurro.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'myrtle', name: 'Myrtle', image: 'images/four/myrtle.png', gender: 'female', cn: false, race: 'durin', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'durnar', name: 'Dur-nar', image: 'images/four/durnar.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'vermeil', name: 'Vermeil', image: 'images/four/vermeil.png', gender: 'female', cn: false, race: 'vulpo', faction: 'siracusa', rank: 'four', alter: false, collab: false},
+	{id: 'ethan', name: 'Ethan', image: 'images/four/ethan.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'may', name: 'May', image: 'images/four/may.png', gender: 'female', cn: false, race: 'liberi', faction: 'victoria', rank: 'four', alter: false, collab: false},
+	{id: 'ambriel', name: 'Ambriel', image: 'images/four/ambriel.png', gender: 'female', cn: false, race: 'sankta', faction: 'laterano', rank: 'four', alter: false, collab: false},
+	{id: 'purestream', name: 'Purestream', image: 'images/four/purestream.png', gender: 'female', cn: false, race: 'aegir', faction: 'yan', rank: 'four', alter: false, collab: false},
+	{id: 'utage', name: 'Utage', image: 'images/four/utage.png', gender: 'female', cn: false, race: 'unknown', faction: 'higashi', rank: 'four', alter: false, collab: false},
+	{id: 'conviction', name: 'Conviction', image: 'images/four/conviction.png', gender: 'other', cn: false, race: 'liberi', faction: 'minos', rank: 'four', alter: false, collab: false},
+	{id: 'cutter', name: 'Cutter', image: 'images/four/cutter.png', gender: 'female', cn: false, race: 'vulpo', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'podenco', name: 'Podenco', image: 'images/four/podenco.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'click', name: 'Click', image: 'images/four/click.png', gender: 'female', cn: false, race: 'zalak', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'jaye', name: 'Jaye', image: 'images/four/jaye.png', gender: 'male', cn: false, race: 'ursus', faction: 'lungmen', rank: 'four', alter: false, collab: false},
+	{id: 'aciddrop', name: 'Aciddrop', image: 'images/four/aciddrop.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'arene', name: 'Arene', image: 'images/four/arene.png', gender: 'male', cn: false, race: 'sankta', faction: 'laterano', rank: 'four', alter: false, collab: false},
+	{id: 'bubble', name: 'Bubble', image: 'images/four/bubble.png', gender: 'female', cn: false, race: 'other', faction: 'sargon', rank: 'four', alter: false, collab: false},
+	{id: 'jackie', name: 'Jackie', image: 'images/four/jackie.png', gender: 'female', cn: false, race: 'perro', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'pinecone', name: 'Pinecone', image: 'images/four/pinecone.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'beanstalk', name: 'Beanstalk', image: 'images/four/beanstalk.png', gender: 'female', cn: false, race: 'rebbah', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'indigo', name: 'Indigo', image: 'images/four/indigo.png', gender: 'female', cn: false, race: 'pythia', faction: 'iberia', rank: 'four', alter: false, collab: false},
+	{id: 'roberta', name: 'Roberta', image: 'images/four/roberta.png', gender: 'female', cn: false, race: 'anaty', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'pudding', name: 'Pudding', image: 'images/four/pudding.png', gender: 'female', cn: false, race: 'aegir', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	{id: 'chestnut', name: 'Chestnut', image: 'images/four/chestnut.png', gender: 'male', cn: false, race: 'durin', faction: 'rhodes', rank: 'four', alter: false, collab: false},
+	{id: 'xiaohei', name: 'Luo Xiaohei', image: 'images/four/xiaohei.png', gender: 'male', cn: true, race: 'feline', faction: 'yan', rank: 'four', alter: false, collab: true},
+	{id: 'totter', name: 'Totter', image: 'images/four/totter.png', gender: 'male', cn: true, race: 'liberi', faction: 'sargon', rank: 'four', alter: false, collab: false},
+	{id: 'quartz', name: 'Quartz', image: 'images/four/quartz.png', gender: 'female', cn: true, race: 'lupo', faction: 'columbia', rank: 'four', alter: false, collab: false},
+	
+	/* five star male */
+	{id: 'aosta', name: 'Aosta', image: 'images/five2/aosta.png', gender: 'male', cn: false, race: 'lupo', faction: 'siracusa', rank: 'five', alter: false, collab: false},
+	{id: 'ayerscape', name: 'Ayerscape', image: 'images/five2/ayerscape.png', gender: 'male', cn: false, race: 'cautus', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'bison', name: 'Bison', image: 'images/five2/bison.png', gender: 'male', cn: false, race: 'forte', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'blitz', name: 'Blitz', image: 'images/five2/blitz.png', gender: 'male', cn: false, race: 'unknown', faction: 'other', rank: 'five', alter: false, collab: true},
+	{id: 'broca', name: 'Broca', image: 'images/five2/broca.png', gender: 'male', cn: false, race: 'feline', faction: 'siracusa', rank: 'five', alter: false, collab: false},
+	{id: 'chiave', name: 'Chiave', image: 'images/five2/chiave.png', gender: 'male', cn: false, race: 'vulpo', faction: 'siracusa', rank: 'five', alter: false, collab: false},
+	{id: 'corroserum', name: 'Corroserum', image: 'images/five2/corroserum.png', gender: 'male', cn: false, race: 'pythia', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'czerny', name: 'Czerny', image: 'images/five2/czerny.png', gender: 'male', cn: false, race: 'elafia', faction: 'leithanien', rank: 'five', alter: false, collab: false},
+	{id: 'elysium', name: 'Elysium', image: 'images/five2/elysium.png', gender: 'male', cn: false, race: 'liberi', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'enforcer', name: 'Enforcer', image: 'images/five2/enforcer.png', gender: 'male', cn: false, race: 'sankta', faction: 'laterano', rank: 'five', alter: false, collab: false},
+	{id: 'executor', name: 'Executor', image: 'images/five2/.png', gender: 'male', cn: false, race: '', faction: '', rank: 'five', alter: false, collab: false},
+	{id: 'flamebringer', name: 'Flamebringer', image: 'images/five2/flamebringer.png', gender: 'male', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'greyyalter', name: 'Greyy the Lightningbearer', image: 'images/five2/greyyalter.png', gender: 'male', cn: false, race: 'perro', faction: 'rhodes', rank: 'five', alter: true, collab: false},
+	{id: 'hung', name: 'Hung', image: 'images/five2/hung.png', gender: 'male', cn: false, race: 'perro', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'leonhardt', name: 'Leonhardt', image: 'images/five2/leonhardt.png', gender: 'male', cn: false, race: 'cautus', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'minimalist', name: 'Minimalist', image: 'images/five2/minimalist.png', gender: 'male', cn: false, race: 'durin', faction: 'sargon', rank: 'five', alter: false, collab: false},
+	{id: 'nothing', name: 'Mr. Nothing', image: 'images/five2/nothing.png', gender: 'male', cn: false, race: 'liberi', faction: 'yan', rank: 'five', alter: false, collab: false},
+	{id: 'puzzle', name: 'Puzzle', image: 'images/five2/puzzle.png', gender: 'male', cn: true, race: 'vouivre', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'qanipalaat', name: 'Qanipalaat', image: 'images/five2/qanipalaat.png', gender: 'male', cn: true, race: 'vulpo', faction: 'sami', rank: 'five', alter: false, collab: false},
+	{id: 'rathalos', name: 'Rathalos S Noir Corne', image: 'images/five/rathalos.png', gender: 'male', cn: true, race: 'oni', faction: 'other', rank: 'five', alter: true, collab: false},
+	{id: 'sesa', name: 'Sesa', image: 'images/five2/sesa.png', gender: 'male', cn: false, race: 'vouivre', faction: 'sargon', rank: 'five', alter: false, collab: false},
+	{id: 'shalem', name: 'Shalem', image: 'images/five2/shalem.png', gender: 'male', cn: false, race: 'pythia', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'sharp', name: 'Sharp', image: 'images/five2/sharp.png', gender: 'male', cn: false, race: 'pythia', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'stormeye', name: 'Stormeye', image: 'images/five2/stormeye.png', gender: 'male', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'tachanka', name: 'Tachanka', image: 'images/five2/tachanka.png', gender: 'male', cn: false, race: 'unknown', faction: 'other', rank: 'five', alter: false, collab: true},
+	{id: 'tequila', name: 'Tequila', image: 'images/five2/tequila.png', gender: 'male', cn: false, race: 'perro', faction: 'bolivar', rank: 'five', alter: false, collab: false},
+	{id: 'windflit', name: 'Windflit', image: 'images/five2/windflit.png', gender: 'male', cn: false, race: 'perro', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	
+	/* five star female release */
+	{id: 'amiya', name: 'Amiya', image: 'images/five/amiya.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'cliffheart', name: 'Cliffheart', image: 'images/five/cliffheart.png', gender: 'female', cn: false, race: 'feline', faction: 'kjerag', rank: 'five', alter: false, collab: false},
+	{id: 'croissant', name: 'Croissant', image: 'images/five/croissant.png', gender: 'female', cn: false, race: 'forte', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'feater', name: 'FEater', image: 'images/five/feater.png', gender: 'female', cn: false, race: 'ursus', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'firewatch', name: 'Firewatch', image: 'images/five/firewatch.png', gender: 'female', cn: false, race: 'elafia', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'franka', name: 'Franka', image: 'images/five/franka.png', gender: 'female', cn: false, race: 'vulpo', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'indra', name: 'Indra', image: 'images/five/indra.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'istina', name: 'Istina', image: 'images/five/istina.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'five', alter: false, collab: false},
+	{id: 'lappland', name: 'Lappland', image: 'images/five/lappland.png', gender: 'female', cn: false, race: 'lupo', faction: 'siracusa', rank: 'five', alter: false, collab: false},
+	{id: 'liskarm', name: 'Liskarm', image: 'images/five/liskarm.png', gender: 'female', cn: false, race: 'vouivre', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'manticore', name: 'Manticore', image: 'images/five/manticore.png', gender: 'female', cn: false, race: 'other', faction: 'sargon', rank: 'five', alter: false, collab: false},
+	{id: 'mayer', name: 'Mayer', image: 'images/five/mayer.png', gender: 'female', cn: false, race: 'anaty', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'meteorite', name: 'Meteorite', image: 'images/five/meteorite.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'nearl', name: 'Nearl', image: 'images/five/nearl.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'nightmare', name: 'Nightmare', image: 'images/five/nightmare.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'platinum', name: 'Platinum', image: 'images/five/platinum.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'five', alter: false, collab: false},
+	{id: 'poison', name: 'Blue Poison', image: 'images/five/poison.png', gender: 'female', cn: false, race: 'other', faction: 'iberia', rank: 'five', alter: false, collab: false},
+	{id: 'pramanix', name: 'Pramanix', image: 'images/five/pramanix.png', gender: 'female', cn: false, race: 'feline', faction: 'kjerag', rank: 'five', alter: false, collab: false},
+	{id: 'provence', name: 'Provence', image: 'images/five/provence.png', gender: 'female', cn: false, race: 'lupo', faction: 'siracusa', rank: 'five', alter: false, collab: false},
+	{id: 'ptilopsis', name: 'Ptilopsis', image: 'images/five/ptilopsis.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'red', name: 'Projekt Red', image: 'images/five/red.png', gender: 'female', cn: false, race: 'lupo', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'savage', name: 'Savage', image: 'images/five/savage.png', gender: 'female', cn: false, race: 'cautus', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'silence', name: 'Silence', image: 'images/five/silence.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'skyfire', name: 'Skyfire', image: 'images/five/skyfire.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'sora', name: 'Sora', image: 'images/five/sora.png', gender: 'female', cn: false, race: 'unknown', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'specter', name: 'Specter', image: 'images/five/specter.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'five', alter: false, collab: false},
+	{id: 'texas', name: 'Texas', image: 'images/five/texas.png', gender: 'female', cn: false, race: 'lupo', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'vulcan', name: 'Vulcan', image: 'images/five/vulcan.png', gender: 'female', cn: false, race: 'forte', faction: 'minos', rank: 'five', alter: false, collab: false},
+	{id: 'warfarin', name: 'Warfarin', image: 'images/five/warfarin.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'zima', name: 'Zima', image: 'images/five/zima.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'five', alter: false, collab: false},
+	
+	/* five star female post-release */
+	{id: 'grani', name: 'Grani', image: 'images/five/grani.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'five', alter: false, collab: false},
+	{id: 'swire', name: 'Swire', image: 'images/five/swire.png', gender: 'female', cn: false, race: 'feline', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'glaucus', name: 'Glaucus', image: 'images/five/glaucus.png', gender: 'female', cn: false, race: 'unknown', faction: 'iberia', rank: 'five', alter: false, collab: false},
+	{id: 'ceylon', name: 'Ceylon', image: 'images/five/ceylon.png', gender: 'female', cn: false, race: 'liberi', faction: 'siesta', rank: 'five', alter: false, collab: false},
+	{id: 'astesia', name: 'Astesia', image: 'images/five/astesia.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'breeze', name: 'Breeze', image: 'images/five/breeze.png', gender: 'female', cn: false, race: 'vulpo', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'waai', name: 'Waai Fu', image: 'images/five/waai.png', gender: 'female', cn: false, race: 'feline', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'reed', name: 'Reed', image: 'images/five/reed.png', gender: 'female', cn: false, race: 'draco', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'greythroat', name: 'GreyThroat', image: 'images/five/greythroat.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'snowsant', name: 'Snowsant', image: 'images/five/snowsant.png', gender: 'female', cn: false, race: 'liberi', faction: 'lungmen', rank: 'five', alter: false, collab: false},
+	{id: 'leizi', name: 'Leizi', image: 'images/five/leizi.png', gender: 'female', cn: false, race: 'other', faction: 'yan', rank: 'five', alter: false, collab: false},
+	{id: 'bibeak', name: 'Bibeak', image: 'images/five/bibeak.png', gender: 'female', cn: false, race: 'liberi', faction: 'sami', rank: 'five', alter: false, collab: false},
+	{id: 'shamare', name: 'Shamare', image: 'images/five/shamare.png', gender: 'female', cn: false, race: 'vulpo', faction: 'siracusa', rank: 'five', alter: false, collab: false},
+	{id: 'sideroca', name: 'Sideroca', image: 'images/five/sideroca.png', gender: 'female', cn: false, race: 'forte', faction: 'minos', rank: 'five', alter: false, collab: false},
+	{id: 'asbestos', name: 'Asbestos', image: 'images/five/asbestos.png', gender: 'female', cn: false, race: 'savra', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'tsukinogi', name: 'tsukinogi', image: 'images/five/tsukinogi.png', gender: 'female', cn: false, race: 'elafia', faction: 'higashi', rank: 'five', alter: false, collab: false},
+	{id: 'absinthe', name: 'Absinthe', image: 'images/five/absinthe.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'five', alter: false, collab: false},
+	{id: 'folinic', name: 'Folinic', image: 'images/five/folinic.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'beeswax', name: 'Beeswax', image: 'images/five/beeswax.png', gender: 'female', cn: false, race: 'caprinae', faction: 'sargon', rank: 'five', alter: false, collab: false},
+	{id: 'scene', name: 'Scene', image: 'images/five/scene.png', gender: 'female', cn: false, race: 'other', faction: 'sargon', rank: 'five', alter: false, collab: false},
+	{id: 'andreana', name: 'Andreana', image: 'images/five/andreana.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'five', alter: false, collab: false},
+	{id: 'tomimi', name: 'Tomimi', image: 'images/five/tomimi.png', gender: 'female', cn: false, race: 'archosauria', faction: 'sargon', rank: 'five', alter: false, collab: false},
+	{id: 'flint', name: 'Flint', image: 'images/five/flint.png', gender: 'female', cn: false, race: 'liberi', faction: 'sargon', rank: 'five', alter: false, collab: false},
+	{id: 'pith', name: 'Pith', image: 'images/five/pith.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'touch', name: 'Touch', image: 'images/five/touch.png', gender: 'female', cn: false, race: 'caprinae', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'mint', name: 'Mint', image: 'images/five/mint.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'april', name: 'April', image: 'images/five/april.png', gender: 'female', cn: false, race: 'april', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'whislash', name: 'Whislash', image: 'images/five/whislash.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'five', alter: false, collab: false},
+	{id: 'whisperain', name: 'Whisperain', image: 'images/five/whisperain.png', gender: 'female', cn: false, race: 'aegir', faction: 'iberia', rank: 'five', alter: false, collab: false},
+	{id: 'kafka', name: 'Kafka', image: 'images/five/kafka.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'robin', name: 'Robin', image: 'images/five/robin.png', gender: 'female', cn: false, race: 'anaty', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'iris', name: 'Iris', image: 'images/five/iris.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'tuye', name: 'Tuye', image: 'images/five/tuye.png', gender: 'female', cn: false, race: 'forte', faction: 'sargon', rank: 'five', alter: false, collab: false},
+	
+	/* five star female post-WiR */
+	{id: 'lavalter', name: 'Lava the Purgatory', image: 'images/five/lavalter.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'five', alter: true, collab: false},
+	{id: 'frost', name: 'Frost', image: 'images/five/frost.png', gender: 'female', cn: false, race: 'unknown', faction: 'other', rank: 'five', alter: false, collab: true},
+	{id: 'toddifons', name: 'Toddifons', image: 'images/five/toddifons.png', gender: 'female', cn: false, race: 'vouivre', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'heavyrain', name: 'Heavyrain', image: 'images/five/heavyrain.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'akafuyu', name: 'Akafuyu', image: 'images/five/akafuyu.png', gender: 'female', cn: false, race: 'aegir', faction: 'higashi', rank: 'five', alter: false, collab: false},
+	{id: 'kirara', name: 'Kirara', image: 'images/five/kirara.png', gender: 'female', cn: false, race: 'aegir', faction: 'higashi', rank: 'five', alter: false, collab: false},
+	{id: 'bena', name: 'Bena', image: 'images/five/bena.png', gender: 'female', cn: false, race: 'bena', faction: 'caprinae', rank: 'five', alter: false, collab: false},
+	{id: 'pluma', name: 'La Pluma', image: 'images/five/pluma.png', gender: 'female', cn: false, race: 'liberi', faction: 'bolivar', rank: 'five', alter: false, collab: false},
+	{id: 'mulberry', name: 'Mulberry', image: 'images/five/mulberry.png', gender: 'female', cn: false, race: 'liberi', faction: 'yan', rank: 'five', alter: false, collab: false},
+	{id: 'ashlock', name: 'Ashlock', image: 'images/five/ashlock.png', gender: 'female', cn: false, race: 'zalak', faction: 'kazimierz', rank: 'five', alter: false, collab: false},
+	{id: 'honeyberry', name: 'Honeyberry', image: 'images/five/honeyberry.png', gender: 'female', cn: false, race: 'zalak', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'mane', name: 'Wild Mane', image: 'images/five/mane.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'five', alter: false, collab: false},
+	{id: 'aurora', name: 'Aurora', image: 'images/five/aurora.png', gender: 'female', cn: false, race: 'ursus', faction: 'kjerag', rank: 'five', alter: false, collab: false},
+	{id: 'kjera', name: 'Kjera', image: 'images/five/kjera.png', gender: 'female', cn: false, race: 'feranmut', faction: 'kjerag', rank: 'five', alter: false, collab: false},
+	{id: 'ncd', name: 'Nine-Colored Deer', image: 'images/five/ncd.png', gender: 'female', cn: false, race: 'elafia', faction: 'yan', rank: 'five', alter: false, collab: true},
+	{id: 'blacknight', name: 'Blacknight', image: 'images/five/blacknight.png', gender: 'female', cn: false, race: 'savra', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'kroosalter', name: 'Kroos the Keen Glint', image: 'images/five/kroosalter.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'five', alter: true, collab: false},
+	{id: 'quercus', name: 'Quercus', image: 'images/five/quercus.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'kazemaru', name: 'Kazemaru', image: 'images/five/kazemaru.png', gender: 'female', cn: false, race: 'feline', faction: 'higashi', rank: 'five', alter: false, collab: false},
+	{id: 'rockrock', name: 'Rockrock', image: 'images/five/rockrock.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'heidi', name: 'Heidi', image: 'images/five/heidi.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'erato', name: 'Erato', image: 'images/five/erato.png', gender: 'female', cn: false, race: 'liberi', faction: 'minos', rank: 'five', alter: false, collab: false},
+	{id: 'hibalter', name: 'Hibiscus the Purifier', image: 'images/five/hibalter.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'five', alter: true, collab: false},
+	{id: 'astgenne', name: 'Astgenne', image: 'images/five/astgenne.png', gender: 'female', cn: true, race: 'liberi', faction: 'columbia', rank: 'five', alter: false, collab: false},
+	{id: 'cantabile', name: 'Cantabile', image: 'images/five/cantabile.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'proviso', name: 'Proviso', image: 'images/five/proviso.png', gender: 'female', cn: true, race: 'kuranta', faction: 'kazimierz', rank: 'five', alter: false, collab: false},
+	{id: 'highmore', name: 'Highmore', image: 'images/five/highmore.png', gender: 'female', cn: true, race: 'aegir', faction: 'iberia', rank: 'five', alter: false, collab: false},
+	{id: 'tulip', name: 'Tulip', image: 'images/five/tulip.png', gender: 'female', cn: true, race: 'pythia', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'dagda', name: 'Dagda', image: 'images/five/dagda.png', gender: 'female', cn: true, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'paprika', name: 'Paprika', image: 'images/five/paprika.png', gender: 'female', cn: true, race: 'sarkaz', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'lunacub', name: 'Lunacub', image: 'images/five/lunacub.png', gender: 'female', cn: true, race: 'lupo', faction: 'siracusa', rank: 'five', alter: false, collab: false},
+	{id: 'harmonie', name: 'Harmonie', image: 'images/five/harmonie.png', gender: 'female', cn: true, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
+	{id: 'firewhistle', name: 'Firewhistle', image: 'images/five/firewhistle.png', gender: 'female', cn: true, race: 'liberi', faction: 'rim', rank: 'five', alter: false, collab: false},
+	{id: 'jieyun', name: 'Jieyun', image: 'images/five/jieyun.png', gender: 'female', cn: true, race: 'other', faction: 'yan', rank: 'five', alter: false, collab: false},
+	{id: 'chimes', name: 'Wind Chimes', image: 'images/five/chimes.png', gender: 'female', cn: true, race: 'forte', faction: 'yan', rank: 'five', alter: false, collab: false},
+	
+	/* six star pre-WiR */
+	{id: 'aak', name: 'Aak', image: 'images/six/aak.png', gender: 'male', cn: false, race: 'feline', faction: 'lungmen', rank: 'six', alter: false, collab: false},
+	{id: 'angelina', name: 'Angelina', image: 'images/six/angelina.png', gender: 'female', cn: false, race: 'vulpo', faction: 'siracusa', rank: 'six', alter: false, collab: false},
+	{id: 'archetto', name: 'Archetto', image: 'images/six/archetto.png', gender: 'female', cn: false, race: 'liberi', faction: 'laterano', rank: 'six', alter: false, collab: false},
+	{id: 'bagpipe', name: 'Bagpipe', image: 'images/six/bagpipe.png', gender: 'female', cn: false, race: 'vouivre', faction: 'victoria', rank: 'six', alter: false, collab: false},
+	{id: 'blaze', name: 'Blaze', image: 'images/six/blaze.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'blemi', name: 'Blemishine', image: 'images/six/blemi.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'six', alter: false, collab: false},
+	{id: 'ceobe', name: 'Ceobe', image: 'images/six/ceobe.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'chen', name: 'Ch\'en', image: 'images/six/chen.png', gender: 'female', cn: false, race: 'lung', faction: 'lungmen', rank: 'six', alter: false, collab: false},
+	{id: 'eunectes', name: 'Eunectes', image: 'images/six/eunectes.png', gender: 'female', cn: false, race: 'pythia', faction: 'sargon', rank: 'six', alter: false, collab: false},
+	{id: 'eyja', name: 'Eyjafjalla', image: 'images/six/eyja.png', gender: 'female', cn: false, race: 'caprinae', faction: 'leithanien', rank: 'six', alter: false, collab: false},
+	{id: 'exu', name: 'Exusiai', image: 'images/six/exu.png', gender: 'female', cn: false, race: 'sankta', faction: 'lungmen', rank: 'six', alter: false, collab: false},
+	{id: 'hellagur', name: 'Hellagur', image: 'images/six/hellagur.png', gender: 'male', cn: false, race: 'liberi', faction: 'ursus', rank: 'six', alter: false, collab: false},
+	{id: 'hoshi', name: 'Hoshiguma', image: 'images/six/hoshi.png', gender: 'female', cn: false, race: 'oni', faction: 'lungmen', rank: 'six', alter: false, collab: false},
+	{id: 'ifrit', name: 'Ifrit', image: 'images/six/ifrit.png', gender: 'female', cn: false, race: 'savra', faction: 'columbia', rank: 'six', alter: false, collab: false},
+	{id: 'magallan', name: 'Magallan', image: 'images/six/magallan.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'six', alter: false, collab: false},
+	{id: 'mostima', name: 'Mostima', image: 'images/six/mostima.png', gender: 'female', cn: false, race: 'sankta', faction: 'laterano', rank: 'six', alter: false, collab: false},
+	{id: 'mountain', name: 'Mountain', image: 'images/six/mountain.png', gender: 'male', cn: false, race: 'feline', faction: 'columbia', rank: 'six', alter: false, collab: false},
+	{id: 'mudrock', name: 'Mudrock', image: 'images/six/mudrock.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'nian', name: 'Nian', image: 'images/six/nian.png', gender: 'female', cn: false, race: 'feranmut', faction: 'yan', rank: 'six', alter: false, collab: false},
+	{id: 'nightingale', name: 'Nightingale', image: 'images/six/nightingale.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'phantom', name: 'Phantom', image: 'images/six/phantom.png', gender: 'male', cn: false, race: 'feline', faction: 'victoria', rank: 'six', alter: false, collab: false},
+	{id: 'rosa', name: 'Rosa', image: 'images/six/rosa.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'six', alter: false, collab: false},
+	{id: 'rosmontis', name: 'Rosmontis', image: 'images/six/rosmontis.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'saria', name: 'Saria', image: 'images/six/saria.png', gender: 'female', cn: false, race: 'vouivre', faction: 'columbia', rank: 'six', alter: false, collab: false},
+	{id: 'schwarz', name: 'Schwarz', image: 'images/six/schwarz.png', gender: 'female', cn: false, race: 'feline', faction: 'siesta', rank: 'six', alter: false, collab: false},
+	{id: 'shining', name: 'Shining', image: 'images/six/shining.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'siege', name: 'Siege', image: 'images/six/siege.png', gender: 'female', cn: false, race: 'other', faction: 'victoria', rank: 'six', alter: false, collab: false},
+	{id: 'silverash', name: 'SilverAsh', image: 'images/six/silverash.png', gender: 'male', cn: false, race: 'feline', faction: 'kjerag', rank: 'six', alter: false, collab: false},
+	{id: 'skadi', name: 'Skadi', image: 'images/six/skadi.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'six', alter: false, collab: false},
+	{id: 'surtr', name: 'Surtr', image: 'images/six/surtr.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'suzuran', name: 'Suzuran', image: 'images/six/suzuran.png', gender: 'female', cn: false, race: 'vulpo', faction: 'siracusa', rank: 'six', alter: false, collab: false},
+	{id: 'thorns', name: 'Thorns', image: 'images/six/thorns.png', gender: 'male', cn: false, race: 'aegir', faction: 'aegir', rank: 'six', alter: false, collab: false},
+	{id: 'w', name: 'W', image: 'images/six/w.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'babel', rank: 'six', alter: false, collab: false},
+	{id: 'weedy', name: 'Weedy', image: 'images/six/weedy.png', gender: 'female', cn: false, race: 'aegir', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	
+	/* six star post-WiR */
+	{id: 'dusk', name: 'Dusk', image: 'images/six/dusk.png', gender: 'female', cn: false, race: 'feranmut', faction: 'yan', rank: 'six', alter: false, collab: false},
+	{id: 'saga', name: 'Saga', image: 'images/six/saga.png', gender: 'female', cn: false, race: 'perro', faction: 'higashi', rank: 'six', alter: false, collab: false},
+	{id: 'ash', name: 'Ash', image: 'images/six/ash.png', gender: 'female', cn: false, race: 'unknown', faction: 'other', rank: 'six', alter: false, collab: true},
+	{id: 'passenger', name: 'Passenger', image: 'images/six/passenger.png', gender: 'male', cn: false, race: 'liberi', faction: 'sargon', rank: 'six', alter: false, collab: false},
+	{id: 'skalter', name: 'Skadi the Corrupting Heart', image: 'images/six/skalter.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'six', alter: true, collab: false},
+	{id: 'gladiia', name: 'Gladiia', image: 'images/six/gladiia.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'six', alter: false, collab: false},
+	{id: 'kaltsit', name: 'Kal\'tsit', image: 'images/six/kaltsit.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'carnelian', name: 'Carnelian', image: 'images/six/carnelian.png', gender: 'female', cn: false, race: 'caprinae', faction: 'leithanien', rank: 'six', alter: false, collab: false},
+	{id: 'pallas', name: 'Pallas', image: 'images/six/pallas.png', gender: 'female', cn: false, race: 'forte', faction: 'minos', rank: 'six', alter: false, collab: false},
+	{id: 'chalter', name: 'Ch\'en the Holungday', image: 'images/six/chalter.png', gender: 'female', cn: false, race: 'lung', faction: 'rhodes', rank: 'six', alter: true, collab: false},
+	{id: 'mizuki', name: 'Mizuki', image: 'images/six/mizuki.png', gender: 'male', cn: false, race: 'aegir', faction: 'higashi', rank: 'six', alter: false, collab: false},
+	{id: 'saileach', name: 'Saileach', image: 'images/six/saileach.png', gender: 'female', cn: false, race: 'vouivre', faction: 'victoria', rank: 'six', alter: false, collab: false},
+	{id: 'fartooth', name: 'Fartooth', image: 'images/six/fartooth.png', gender: 'female', cn: false, race: 'liberi', faction: 'kazimierz', rank: 'six', alter: false, collab: false},
+	{id: 'nearlter', name: 'Nearl the Radiant Knight', image: 'images/six/nearlter.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'six', alter: true, collab: false},
+	{id: 'flametail', name: 'Flametail', image: 'images/six/flametail.png', gender: 'female', cn: false, race: 'zalak', faction: 'kazimierz', rank: 'six', alter: false, collab: false},
+	{id: 'gnosis', name: 'Gnosis', image: 'images/six/gnosis.png', gender: 'male', cn: false, race: 'liberi', faction: 'kjerag', rank: 'six', alter: false, collab: false},
+	{id: 'ling', name: 'Ling', image: 'images/six/ling.png', gender: 'female', cn: false, race: 'feranmut', faction: 'yan', rank: 'six', alter: false, collab: false},
+	{id: 'lee', name: 'Lee', image: 'images/six/lee.png', gender: 'male', cn: false, race: 'lung', faction: 'lungmen', rank: 'six', alter: false, collab: false},
+	{id: 'goldenglow', name: 'Goldenglow', image: 'images/six/goldenglow.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'six', alter: false, collab: false},
+	{id: 'fiammetta', name: 'Fiammetta', image: 'images/six/fiammetta.png', gender: 'female', cn: false, race: 'liberi', faction: 'laterano', rank: 'six', alter: false, collab: false},
+	{id: 'horn', name: 'Horn', image: 'images/six/horn.png', gender: 'female', cn: false, race: 'lupo', faction: 'victoria', rank: 'six', alter: false, collab: false},
+	{id: 'irene', name: 'Irene', image: 'images/six/irene.png', gender: 'female', cn: false, race: 'liberi', faction: 'iberia', rank: 'six', alter: false, collab: false},
+	{id: 'specalter', name: 'Specter the Unchained', image: 'images/six/specalter.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'six', alter: true, collab: false},
+	{id: 'lumen', name: 'Lumen', image: 'images/six/lumen.png', gender: 'male', cn: false, race: 'aegir', faction: 'iberia', rank: 'six', alter: false, collab: false},
+	{id: 'ebenholz', name: 'Ebenholz', image: 'images/six/ebenholz.png', gender: 'male', cn: false, race: 'caprinae', faction: 'leithanien', rank: 'six', alter: false, collab: false},
+	{id: 'doesnotexist', name: 'Dorothy', image: 'images/six/doesnotexist.png', gender: 'female', cn: true, race: 'zalak', faction: 'columbia', rank: 'six', alter: false, collab: false},
+	{id: 'gavialter', name: 'Gavial the Invincible', image: 'images/six/gavialter.png', gender: 'female', cn: false, race: 'archosauria', faction: 'rhodes', rank: 'six', alter: true, collab: false},
+	{id: 'pozy', name: 'Pozёmka', image: 'images/six/pozy.png', gender: 'female', cn: false, race: 'lupo', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'mlynar', name: 'Młynar', image: 'images/six/mlynar.png', gender: 'male', cn: true, race: 'kuranta', faction: 'kazimierz', rank: 'six', alter: false, collab: false},
+	{id: 'stainless', name: 'Stainless', image: 'images/six/stainless.png', gender: 'male', cn: true, race: 'feline', faction: 'victoria', rank: 'six', alter: false, collab: false},
+	{id: 'penance', name: 'Penance', image: 'images/six/penance.png', gender: 'female', cn: true, race: 'lupo', faction: 'siracusa', rank: 'six', alter: false, collab: false},
+	{id: 'texalter', name: 'Texas the Omertosa', image: 'images/six/texalter.png', gender: 'female', cn: true, race: 'lupo', faction: 'lungmen', rank: 'six', alter: true, collab: false},
+	{id: 'vigil', name: 'Vigil', image: 'images/six/vigil.png', gender: 'male', cn: true, race: 'lupo', faction: 'siracusa', rank: 'six', alter: false, collab: false},
+	{id: 'reedalter', name: 'Reed the Flame Shadow', image: 'images/six/reedalter.png', gender: 'female', cn: true, race: 'draco', faction: 'victoria', rank: 'six', alter: true, collab: false},
+	{id: 'lin', name: 'Lin', image: 'images/six/lin.png', gender: 'female', cn: true, race: 'zalak', faction: 'lungmen', rank: 'six', alter: false, collab: false},
+	{id: 'chongyue', name: 'Chongyue', image: 'images/six/chongyue.png', gender: 'male', cn: true, race: 'feranmut', faction: 'yan', rank: 'six', alter: false, collab: false},
+	{id: 'qiubai', name: 'Qiubai', image: 'images/six/qubai.png', gender: 'female', cn: true, race: 'elafia', faction: 'yan', rank: 'six', alter: false, collab: false},
+
+	{id: 'squishy', name: 'Squishy', image: 'images/five2/squishy.png', gender: 'male', cn: true, race: 'other', faction: 'rhodes', rank: 'five', alter: true, collab: true, octo: true},
+	
 ];
 
 var myPicker = new picker.Picker({
@@ -615,9 +875,11 @@ var myPicker = new picker.Picker({
         minBatchSize: 2,
 		maxBatchSize: 10,
 		genders: ['male', 'female', 'other'],
-		ranks: ['two', 'three', 'four', 'five', 'six', 'npc'],
+		ranks: ['two', 'three', 'four', 'five', 'six', 'npc1', 'npc2'],
 		includeCN: false,
 		includeAlter: true,
+		includeCollab: false,
+		includeSecret: false,
 		races: ['aegir', 'anaty', 'archosauria', 'caprinae', 'cautus', 'draco', 'durin', 'elafia', 'feline', 'feranmut', 'forte', 'kuranta', 'liberi', 'lung', 'lupo', 'oni', 'perro', 'pythia', 'rebbah', 'sankta', 'sarkaz', 'savra', 'ursus', 'vouivre', 'vulpo', 'zalak', 'unknown', 'other'],
 		factions: ['aegir', 'babel', 'bolivar', 'columbia', 'higashi', 'iberia', 'kazimierz', 'kjerag', 'laterano', 'leithanien', 'lungmen', 'minos', 'rhodes', 'rim', 'sami', 'sargon', 'siesta', 'siracusa', 'ursus', 'victoria', 'yan', 'other']
     },
@@ -625,7 +887,7 @@ var myPicker = new picker.Picker({
         // Include only if:
         // 1. the character's role is in the list of roles we've checked, and
         // 2. we haven't checked the "recurring only" box, or the character is a recurring character.
-        return settings.genders.indexOf(item.gender) !== -1 && (settings.includeCN || !item.cn) && settings.races.indexOf(item.race) !== -1 && settings.factions.indexOf(item.faction) !== -1 && settings.ranks.indexOf(item.rank) !== -1 && (settings.includeAlter || !item.alter);
+        return settings.genders.indexOf(item.gender) !== -1 && (settings.includeCN || !item.cn) && settings.races.indexOf(item.race) !== -1 && settings.factions.indexOf(item.faction) !== -1 && settings.ranks.indexOf(item.rank) !== -1 && (settings.includeAlter || !item.alter) && (settings.includeCollab || !item.collab) && (settings.includeSecret || !item.octo);
     }
 });
 
@@ -641,6 +903,8 @@ var pickerUI = new PickerUI(myPicker, {
             genders: '.genders',
 			includeCN: '#cn-exclusive',
 			includeAlter: '#alter',
+			includeCollab: '#collab',
+			includeSecret: '#octo',
 			races: '.races',
 			factions: '.factions',
 			ranks: '.ranks'
