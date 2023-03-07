@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0">
+<title>Arknights Favorite Picker</title>
+<style>
+
+body {
+    background:#403f45;
+    color:#e2dff0;
+    font-family:verdana, sans-serif;
+    font-size:10pt;
+    margin:0;
+    padding:20px;
+	z-index:2
+}
+
+.bg {
+	position: fixed; 
+	top: 0;
+	left: 0; 
+	right: 0; 
+	margin: 0 auto;
+	min-width: 55%;
+	min-height: 55%;
+	opacity: 0.2;
+	z-index: -2;
+}
+
+.top-info {
+	z-index: 5;
+}
+
+.footer {
+	position:fixed;
+	top: 45px;
+	right: 25px;
+	color: #878c99;
+}
+
+a:link, a:visited {
+    color:#5daac7;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+a:active, a:hover {
+    color:#ACF;
+}
+
+.explain {
+	position: relative;
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.explain .tooltip {
+	visibility: hidden;
+	font-size:9pt;
+	color: #FFF;
+	background-color: #000;
+	padding:4px 8px;
+	border-radius: 3px;
+	z-index: 5;
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	opacity: 0.8;
+	white-space: nowrap;
+	text-align: center;
+}
+
+.explain:hover .tooltip{
+	visibility: visible;
+}
+
+.explain .tooltip2 {
+	visibility: hidden;
+	font-size:9pt;
+	color: #FFF;
+	background-color: #000;
+	padding:4px 8px;
+	border-radius: 3px;
+	z-index: 5;
+	position: absolute;
+	bottom: 100%;
+	right: 0;
+	opacity: 0.8;
+	white-space: nowrap;
+	text-align: center;
+}
+
+.explain:hover .tooltip2{
+	visibility: visible;
+}
+
+.info {
+    font-weight:bold;
+}
+
+button {
+    font-family:inherit;
+    cursor:pointer;
+    border:0;
+    border-radius:3px;
+    padding:0.3em 0.5em;
+    background:#CCC;
+    color:#000;
+}
+
+button:hover {
+    background:#DDD;
+}
+
+button.disabled {
+    background:#DDD;
+    color:#888;
+    cursor:not-allowed;
+}
+
+button.disabled:hover {
+    background:#DDD;
+}
+
+#container {
+    position:relative;
+    margin-left:-10px;
+    margin-right:-10px;
+    padding:10px;
+    overflow:hidden;
+}
+
+@media (min-width:1024px) {
+    /* Put the found favorites beside the picking div when the window is sufficiently large */
+    #picking {
+        float:left;
+        width:636px;
+		margin-top: 10px;
+    }
+
+    #secondary {
+        margin-left:646px;
+		margin-top: -10px;
+    }
+}
+
+@media (min-width:1300px) {
+    /* Once we get to the point where 636px is less than half of the width of the screen, make the picking div just take up half */
+    #picking {
+        width:50%;
+		margin-top: 10px;
+    }
+
+    #secondary {
+        margin-left:51%;
+		margin-top: -10px;
+    }
+}
+
+#pick {
+    background:#5daac7;
+    color:#FFF;
+    font-size:larger;
+    font-weight:bold;
+    width:6em;
+    border-radius:5px;
+    margin-right:10px;
+	margin-bottom: 15px;
+}
+
+#pick.disabled {
+    background:#ACF;
+}
+
+#pick:hover {
+    background:#4f789e;
+}
+
+.item-list {
+    padding:0;
+    list-style-type:none;
+    line-height:100px;
+}
+
+.item-list li {
+    margin:3px;
+    display:inline-block;
+    height:100px;
+    width:100px;
+    line-height:100px;
+    border:3px solid transparent;
+    text-align:center;
+    position:relative;
+    vertical-align:top;
+    overflow:hidden;
+    border-radius:10%;
+    background:#c2c1c9;
+    color:#000;
+}
+
+.item-list li img {
+    vertical-align:middle;
+    max-height:100%;
+    max-width:100%;
+}
+
+.item-list li span {
+    display:inline-block;
+    vertical-align:middle;
+    line-height:1.2;
+}
+
+@media (max-width:636px) {
+    .item-list {
+        line-height:75px;
+    }
+
+    .item-list li {
+        line-height:75px;
+        height:75px;
+        width:75px;
+    }
+}
+
+@media (max-width:423px) {
+    .item-list {
+        line-height:50px;
+    }
+
+    .item-list li {
+        line-height:50px;
+        height:50px;
+        width:50px;
+    }
+}
+
+#evaluating li {
+    cursor:pointer;
+}
+
+#favorites li {
+    cursor:move;
+}
+
+.item-list li:hover {
+    background:#CDF;
+}
+
+.item-list.sorting li:hover {
+    background:#F7F7F7;
+}
+
+#evaluating li.selected {
+    border:3px solid #92d4f0;
+	background: #dce6f7;
+}
+
+#evaluating, #buttons {
+    text-align:center;
+    margin:auto;
+}
+
+#evaluating li.notice {
+    width:auto;
+    height:auto;
+    max-width:260px;
+    margin:auto;
+    background:#F7F7F7;
+    border-radius:10px;
+    padding:30px 30px;
+    color:#000;
+    text-align:center;
+    line-height:1.4;
+    cursor:auto;
+    font-size:10pt;
+}
+
+#buttons {
+    margin-top:10px;
+    position:relative;
+    z-index:3;
+}
+
+input[type=checkbox] {
+    position: relative;
+	cursor: pointer;
+}
+input[type=checkbox]:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: 0;
+    left: 0;
+    border-radius: 3px;
+    background-color: white;
+}
+input[type=checkbox]:checked:after {
+    content: "";
+    display: block;
+    width: 12px;
+    height: 12px;
+	background-color: #5daac7;
+    position: absolute;
+    top: 0;
+    left: 0;
+	border-radius:3px;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+}
+
+.toggle {
+	display: none;
+}
+
+.lbl-toggle {
+	font-family:inherit;
+    cursor:pointer;
+    border:0;
+    border-radius:3px;
+    padding:0.3em 0.5em;
+    background:#CCC;
+    color:#000;
+}
+
+.lbl-toggle:hover {
+	background:#DDD;
+}
+
+.toggle:checked + .lbl-toggle + .content {
+	display: block;
+	margin-top: 5px;
+}
+
+.wrap-collapsible {
+	margin-top: 20px;
+}
+
+@media (max-width:750px) {
+	.bg {
+		min-width: 25%;
+		min-height: 25%;
+	}
+	input[type=checkbox]:before {
+		width: 14px;
+		height: 14px;
+		top: 1px;
+		left: 1px;
+	}
+	input[type=checkbox]:checked:after {
+		width: 12px;
+		height: 12px;
+		top: 1px;
+		left: 1px;
+	}
+	.tooltip {
+		white-space: normal;
+	}
+	.tooltip2 {
+		white-space: normal;
+	}
+}
+
+</style>
+</head>
+<body>
+<h1>Arknights Favorite Picker</h1>
+
+<div class="top-info">
+<p>This tool will present you with a few characters at a time for you to choose your favorite from. (You can also choose multiple at a time.) Once you've made your selection, press Pick to move to the next round. If you aren't sure, you can also pass the round. However, passing doesn't provide any new information, so passing repeatedly won't get you anywhere.</p>
+
+<p>You can keep picking after a favorite is found to build a list of favorites as long as you like. Since the process works via elimination, characters should show up under Favorite Characters in descending order, starting with your top favorite character. (This also means that if you keep picking until no characters are left, you'll end up with a ranking list similar to a <a href="https://ak-sorter.tumblr.com/">character sorter</a>.)</p>
+
+<p>If needed, you can also re-order your favorites by dragging them around. Refresh the page to reset your progress.<p>
+
+<p>I'm not nearly smart enough to code all this myself. This was made using <a href="https://github.com/antialiasis/favorite-picker">this template</a> from <a href="https://www.dragonflycave.com/favorite.html">The Cave of Dragonflies</a>. All character icons are taken from <a href="https://aceship.github.io/AN-EN-Tags/index.html">Aceship's Toolbox</a>.</p>
+</div>
+
+<img class="bg" src="images/prts.png" alt="">
+
+<div id="container">
+
+<div id="picking">
+<ul id="evaluating" class="item-list">
+</ul>
+
+<p id="buttons"><button id="pick">Pick</button> <button id="pass">Pass</button> <button id="undo">Undo</button> <button id="redo">Redo</button></p>
+
+<script language="JavaScript">
+
+function toggle(source) {
+  checkboxes = document.getElementsByName('races');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
+}
+function toggle2(source) {
+  checkboxes = document.getElementsByName('factions');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
+}
+</script>
+
+<p><b>Gender</b>:
+<label><input type="checkbox" name="genders" class="genders" value="male"> Male</label>
+<label><input type="checkbox" name="genders" class="genders" value="female"> Female</label>
+<label><input type="checkbox" name="genders" class="genders" value="other"> Other</label>
+</p>
+<p><b>Rank</b>:
+<label><input type="checkbox" name="ranks" class="ranks" value="one"> 1*</label>
+<label><input type="checkbox" name="ranks" class="ranks" value="two"> 2*</label>
+<label><input type="checkbox" name="ranks" class="ranks" value="three"> 3*</label>
+<label><input type="checkbox" name="ranks" class="ranks" value="four"> 4*</label>
+<label><input type="checkbox" name="ranks" class="ranks" value="five"> 5*</label>
+<label><input type="checkbox" name="ranks" class="ranks" value="six"> 6*</label>
+<label><input type="checkbox" name="ranks" class="ranks" value="npc"> NPC</label>
+</p>
+<p>
+<label>Include CN-exclusive operators? <input type="checkbox" id="cn-exclusive"></label>
+<label>  |  Include alternate forms? <input type="checkbox" id="alter"></label>
+</p>
+<div class="wrap-collapsible">
+	<input id="collapsible" class="toggle" type="checkbox">
+	<label for="collapsible" class="lbl-toggle">More Filters</label>
+<div class="content">
+<p><b>Race</b>:   (<label class="explain"><input type="checkbox" onClick="toggle(this)" /> Toggle All)<span class="tooltip">Note: After using this, select/deselect a filter manually to apply your changes.</span></label><br>
+<label class="explain"><input type="checkbox" name="races" class="races" value="aegir">Aegir<span class="tooltip">sea creatures</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="anaty">Anaty<span class="tooltip">musteloids</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="archosauria">Archosauria<span class="tooltip">crocodilians</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="caprinae">Caprinae<span class="tooltip">goats and sheep</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="cautus">Cautus<span class="tooltip">rabbits and hares</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="draco">Draco<span class="tooltip">European dragons</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="durin">Durin<span class="tooltip">dwarves</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="elafia">Elafia<span class="tooltip">deer</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="feline">Feline<span class="tooltip">cats</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="feranmut">Feranmut<span class="tooltip">godly beings</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="forte">Forte<span class="tooltip">bovines and camels</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="kuranta">Kuranta<span class="tooltip">horses</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="liberi">Liberi<span class="tooltip">birds</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="lung">Lung<span class="tooltip">Chinese dragons</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="lupo">Lupo<span class="tooltip">wolves</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="oni">Oni<span class="tooltip">Japanese demons</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="perro">Perro<span class="tooltip">dogs</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="pythia">Pythia<span class="tooltip">snakes</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="rebbah">Rebbah<span class="tooltip">hyenas</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="sankta">Sankta<span class="tooltip">angels</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="sarkaz">Sarkaz<span class="tooltip">demons and shapeshifters</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="savra">Savra<span class="tooltip">lizards and salamanders</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="ursus">Ursus<span class="tooltip">bears</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="vouivre">Vouivre<span class="tooltip">wyverns</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="vulpo">Vulpo<span class="tooltip">foxes</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="zalak">Zalak<span class="tooltip2">rodents and opposums</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="unknown">Unknown<span class="tooltip">also includes collab characters</span></label>
+<label class="explain"><input type="checkbox" name="races" class="races" value="other">Other<span class="tooltip">Anasa, Anura, Aslan, Cerato, Elf, Itra, Kylin, Manticore, Petram, Pilosa, Robot</span></label>
+</p>
+<p><b>Faction</b>:   (<label class="explain"><input type="checkbox" onClick="toggle2(this)" /> Toggle All)<span class="tooltip">Note: After using this, select/deselect a filter manually to apply your changes.</span></label><br>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="aegir">Aegir<span class="tooltip">includes Abyssal Hunters</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="babel">Babel</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="bolivar">Bolívar</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="columbia">Columbia<span class="tooltip">includes Blacksteel and Rhine Lab</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="higashi">Higashi</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="iberia">Iberia</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="kazimierz">Kazimierz<span class="tooltip">includes Pinus Sylvestris</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="kjerag">Kjerag<span class="tooltip2">includes Karlan Trade</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="laterano">Laterano</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="leithanien">Leithanian</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="lungmen">Lungmen<span class="tooltip">includes Lee's Detective Agency, LGD, and Penguin Logistics</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="minos">Minos</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="rhodes">Rhodes Island<span class="tooltip">includes Followers and SWEEP</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="rim">Rim Billiton</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="sami">Sami</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="sargon">Sargon</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="siesta">Siesta</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="siracusa">Siracusa</label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="ursus">Ursus<span class="tooltip">includes Ursus Student Self-Governing Group</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="victoria">Victoria<span class="tooltip">includes Dublinn and Glasgow</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="yan">Yan<span class="tooltip">includes Sui</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="other">Unknown/Other</label>
+</p>
+</div>
+</div>
+</div>
+
+<div id="secondary">
+<h2>Favorite Characters</h2>
+
+<ol id="favorites" class="item-list">
+</ol>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="picker.js"></script>
+<script src="picker-ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
+<script>
+'use strict';
+
+var items = [
+	{id: 'lancet', name: 'Lancet-2', image: 'images/three/lancet.png', gender: 'female', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false},
+	{id: 'castle', name: 'Castle-3', image: 'images/three/castle.png', gender: 'male', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false},
+	{id: 'thermal', name: 'THRM-EX', image: 'images/three/thermal.png', gender: 'male', cn: false, race: 'other', faction: 'rhodes', rank: 'one', alter: false},
+	{id: 'justice', name: 'Justice Knight', image: 'images/three/justice.png', gender: 'female', cn: false, race: 'other', faction: 'kazimierz', rank: 'one', alter: false},
+	{id: 'terra', name: 'Terra Research Commission', image: 'images/three/terra.png', gender: 'other', cn: true, race: 'unknown', faction: 'other', rank: 'one', alter: false},
+	
+	{id: 'yato', name: 'Yato', image: 'images/three/yato.png', gender: 'female', cn: false, race: 'oni', faction: 'rhodes', rank: 'two', alter: false},
+	{id: 'durin', name: 'Durin', image: 'images/three/durin.png', gender: 'female', cn: false, race: 'durin', faction: 'rhodes', rank: 'two', alter: false},
+	{id: '12f', name: '12F', image: 'images/three/12f.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'two', alter: false},
+	{id: 'rangers', name: 'Rangers', image: 'images/three/rangers.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'two', alter: false},
+	{id: 'noir', name: 'Noir Corne', image: 'images/three/noir.png', gender: 'male', cn: false, race: 'oni', faction: 'rhodes', rank: 'two', alter: false},
+
+	{id: 'adnachiel', name: 'Adnachiel', image: 'images/three/adnachiel.png', gender: 'male', cn: false, race: 'sankta', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'ansel', name: 'Ansel', image: 'images/three/ansel.png', gender: 'male', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'beagle', name: 'Beagle', image: 'images/three/beagle.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'cardigan', name: 'Cardigan', image: 'images/three/cardigan.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'catapult', name: 'Catapult', image: 'images/three/catapult.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'fang', name: 'Fang', image: 'images/three/fang.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'hibiscus', name: 'Hibiscus', image: 'images/three/hibiscus.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'kroos', name: 'Kroos', image: 'images/three/kroos.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'lava', name: 'Lava', image: 'images/three/lava.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'melantha', name: 'Melantha', image: 'images/three/melantha.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'midnight', name: 'Midnight', image: 'images/three/midnight.png', gender: 'male', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'orchid', name: 'Orchid', image: 'images/three/orchid.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'plume', name: 'Plume', image: 'images/three/plume.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'popukar', name: 'Popukar', image: 'images/three/popukar.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'spot', name: 'Spot', image: 'images/three/spot.png', gender: 'male', cn: false, race: 'rebbah', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'steward', name: 'Steward', image: 'images/three/steward.png', gender: 'male', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'three', alter: false},
+	{id: 'vanilla', name: 'Vanilla', image: 'images/three/vanilla.png', gender: 'female', cn: false, race: 'vouivre', faction: 'rhodes', rank: 'three', alter: false},
+	
+	{id: 'courier', name: 'Courier', image: 'images/four/courier.png', gender: 'male', cn: false, race: 'other', faction: 'kjerag', rank: 'four', alter: false},
+	{id: 'scavenger', name: 'Scavenger', image: 'images/four/scavenger.png', gender: 'female', cn: false, race: 'zalak', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'vigna', name: 'Vigna', image: 'images/four/vigna.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'myrrh', name: 'Myrrh', image: 'images/four/myrrh.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'gavial', name: 'Gavial', image: 'images/four/gavial.png', gender: 'female', cn: false, race: 'archosauria', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'perfumer', name: 'Perfumer', image: 'images/four/perfumer.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'haze', name: 'Haze', image: 'images/four/haze.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'four', alter: false},
+	{id: 'gitano', name: 'Gitano', image: 'images/four/gitano.png', gender: 'female', cn: false, race: 'elafia', faction: 'sami', rank: 'four', alter: false},
+	{id: 'gravel', name: 'Gravel', image: 'images/four/gravel.png', gender: 'female', cn: false, race: 'zalak', faction: 'kazimierz', rank: 'four', alter: false},
+	{id: 'rope', name: 'Rope', image: 'images/four/rope.png', gender: 'female', cn: false, race: 'cautus', faction: 'lungmen', rank: 'four', alter: false},
+	{id: 'shaw', name: 'Shaw', image: 'images/four/shaw.png', gender: 'female', cn: false, race: 'zalak', faction: 'lungmen', rank: 'four', alter: false},
+	{id: 'shirayuki', name: 'Shirayuki', image: 'images/four/shirayuki.png', gender: 'female', cn: false, race: 'anaty', faction: 'higashi', rank: 'four', alter: false},
+	{id: 'meteor', name: 'Meteor', image: 'images/four/meteor.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'four', alter: false},
+	{id: 'jessica', name: 'Jessica', image: 'images/four/jessica.png', gender: 'female', cn: false, race: 'feline', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'deepcolor', name: 'Deepcolor', image: 'images/four/deepcolor.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'four', alter: false},
+	{id: 'earthspirit', name: 'Earthspirit', image: 'images/four/earthspirit.png', gender: 'female', cn: false, race: 'caprinae', faction: 'leithanien', rank: 'four', alter: false},
+	{id: 'dobermann', name: 'Dobermann', image: 'images/four/dobermann.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'estelle', name: 'Estelle', image: 'images/four/estelle.png', gender: 'female', cn: false, race: 'archosauria', faction: 'sargon', rank: 'four', alter: false},
+	{id: 'beehunter', name: 'Beehunter', image: 'images/four/beehunter.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'four', alter: false},
+	{id: 'mousse', name: 'Mousse', image: 'images/four/mousse.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'four', alter: false},
+	{id: 'frostleaf', name: 'Frostleaf', image: 'images/four/frostleaf.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'matoimaru', name: 'Matoimaru', image: 'images/four/matoimaru.png', gender: 'female', cn: false, race: 'oni', faction: 'higashi', rank: 'four', alter: false},
+	{id: 'cuora', name: 'Cuora', image: 'images/four/cuora.png', gender: 'female', cn: false, race: 'other', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'gummy', name: 'Gummy', image: 'images/four/gummy.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'four', alter: false},
+	{id: 'matterhorn', name: 'Matterhorn', image: 'images/four/matterhorn.png', gender: 'male', cn: false, race: 'forte', faction: 'kjerag', rank: 'four', alter: false},
+	
+	{id: 'greyy', name: 'Greyy', image: 'images/four/greyy.png', gender: 'male', cn: false, race: 'perro', faction: 'bolivar', rank: 'four', alter: false},
+	{id: 'sussurro', name: 'Sussurro', image: 'images/four/sussurro.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'myrtle', name: 'Myrtle', image: 'images/four/myrtle.png', gender: 'female', cn: false, race: 'durin', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'durnar', name: 'Dur-nar', image: 'images/four/durnar.png', gender: 'female', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'vermeil', name: 'Vermeil', image: 'images/four/vermeil.png', gender: 'female', cn: false, race: 'vulpo', faction: 'siracusa', rank: 'four', alter: false},
+	{id: 'ethan', name: 'Ethan', image: 'images/four/ethan.png', gender: 'male', cn: false, race: 'savra', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'may', name: 'May', image: 'images/four/may.png', gender: 'female', cn: false, race: 'liberi', faction: 'victoria', rank: 'four', alter: false},
+	{id: 'ambriel', name: 'Ambriel', image: 'images/four/ambriel.png', gender: 'female', cn: false, race: 'sankta', faction: 'laterano', rank: 'four', alter: false},
+	{id: 'purestream', name: 'Purestream', image: 'images/four/purestream.png', gender: 'female', cn: false, race: 'aegir', faction: 'yan', rank: 'four', alter: false},
+	{id: 'utage', name: 'Utage', image: 'images/four/utage.png', gender: 'female', cn: false, race: 'unknown', faction: 'higashi', rank: 'four', alter: false},
+	{id: 'conviction', name: 'Conviction', image: 'images/four/conviction.png', gender: 'other', cn: false, race: 'liberi', faction: 'minos', rank: 'four', alter: false},
+	{id: 'cutter', name: 'Cutter', image: 'images/four/cutter.png', gender: 'female', cn: false, race: 'vulpo', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'podenco', name: 'Podenco', image: 'images/four/podenco.png', gender: 'female', cn: false, race: 'perro', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'click', name: 'Click', image: 'images/four/click.png', gender: 'female', cn: false, race: 'zalak', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'jaye', name: 'Jaye', image: 'images/four/jaye.png', gender: 'male', cn: false, race: 'ursus', faction: 'lungmen', rank: 'four', alter: false},
+	{id: 'aciddrop', name: 'Aciddrop', image: 'images/four/aciddrop.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'arene', name: 'Arene', image: 'images/four/arene.png', gender: 'male', cn: false, race: 'sankta', faction: 'laterano', rank: 'four', alter: false},
+	{id: 'bubble', name: 'Bubble', image: 'images/four/bubble.png', gender: 'female', cn: false, race: 'other', faction: 'sargon', rank: 'four', alter: false},
+	{id: 'jackie', name: 'Jackie', image: 'images/four/jackie.png', gender: 'female', cn: false, race: 'perro', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'pinecone', name: 'Pinecone', image: 'images/four/pinecone.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'beanstalk', name: 'Beanstalk', image: 'images/four/beanstalk.png', gender: 'female', cn: false, race: 'rebbah', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'indigo', name: 'Indigo', image: 'images/four/indigo.png', gender: 'female', cn: false, race: 'pythia', faction: 'iberia', rank: 'four', alter: false},
+	{id: 'roberta', name: 'Roberta', image: 'images/four/roberta.png', gender: 'female', cn: false, race: 'anaty', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'pudding', name: 'Pudding', image: 'images/four/pudding.png', gender: 'female', cn: false, race: 'aegir', faction: 'columbia', rank: 'four', alter: false},
+	{id: 'chestnut', name: 'Chestnut', image: 'images/four/chestnut.png', gender: 'male', cn: false, race: 'durin', faction: 'rhodes', rank: 'four', alter: false},
+	{id: 'xiaohei', name: 'Luo Xiaohei', image: 'images/four/xiaohei.png', gender: 'male', cn: true, race: 'feline', faction: 'yan', rank: 'four', alter: false},
+	{id: 'totter', name: 'Totter', image: 'images/four/totter.png', gender: 'male', cn: true, race: 'liberi', faction: 'sargon', rank: 'four', alter: false},
+	{id: 'quartz', name: 'Quartz', image: 'images/four/quartz.png', gender: 'female', cn: true, race: 'lupo', faction: 'columbia', rank: 'four', alter: false},
+];
+
+var myPicker = new picker.Picker({
+    items: items,
+	defaultSettings: {
+        minBatchSize: 2,
+		maxBatchSize: 10,
+		genders: ['male', 'female', 'other'],
+		ranks: ['two', 'three', 'four', 'five', 'six', 'npc'],
+		includeCN: false,
+		includeAlter: true,
+		races: ['aegir', 'anaty', 'archosauria', 'caprinae', 'cautus', 'draco', 'durin', 'elafia', 'feline', 'feranmut', 'forte', 'kuranta', 'liberi', 'lung', 'lupo', 'oni', 'perro', 'pythia', 'rebbah', 'sankta', 'sarkaz', 'savra', 'ursus', 'vouivre', 'vulpo', 'zalak', 'unknown', 'other'],
+		factions: ['aegir', 'babel', 'bolivar', 'columbia', 'higashi', 'iberia', 'kazimierz', 'kjerag', 'laterano', 'leithanien', 'lungmen', 'minos', 'rhodes', 'rim', 'sami', 'sargon', 'siesta', 'siracusa', 'ursus', 'victoria', 'yan', 'other']
+    },
+    shouldIncludeItem: function(item, settings) {
+        // Include only if:
+        // 1. the character's role is in the list of roles we've checked, and
+        // 2. we haven't checked the "recurring only" box, or the character is a recurring character.
+        return settings.genders.indexOf(item.gender) !== -1 && (settings.includeCN || !item.cn) && settings.races.indexOf(item.race) !== -1 && settings.factions.indexOf(item.faction) !== -1 && settings.ranks.indexOf(item.rank) !== -1 && (settings.includeAlter || !item.alter);
+    }
+});
+
+var pickerUI = new PickerUI(myPicker, {
+    elements: {
+        pick: "#pick",
+        pass: "#pass",
+        undo: "#undo",
+        redo: "#redo",
+        evaluating: "#evaluating",
+        favorites: "#favorites",
+		settings: {
+            genders: '.genders',
+			includeCN: '#cn-exclusive',
+			includeAlter: '#alter',
+			races: '.races',
+			factions: '.factions',
+			ranks: '.ranks'
+        }
+    }
+});
+
+pickerUI.initialize();
+
+/* Sortable favorites - you can safely remove this, and the Sortable.min.js script, if you don't want to be able to sort your favorite list. */
+var sortable = new Sortable(pickerUI.elem.favorites.get(0), {
+    draggable: '.item',
+    animation: 100,
+    onStart: function() {
+        pickerUI.elem.favorites.addClass("sorting");
+    },
+    onEnd: function() {
+        pickerUI.elem.favorites.removeClass("sorting");
+    },
+    onUpdate: function() {
+        myPicker.setFavorites(pickerUI.elem.favorites.children().map(function() {
+            return pickerUI.getItem(this);
+        }).get());
+        pickerUI.update(true);
+    }
+});
+/* End sortable favorites */
+</script>
+<div class="footer">made by alyssushi#2239</div>
+</body>
+</html>
