@@ -337,7 +337,17 @@ input[type=checkbox]:checked:after {
   	overflow: hidden;
 }
 
+.changelog {
+  	padding: 0 18px;
+  	display: none;
+  	overflow: hidden;
+}
+
 .toggle {
+	display: none;
+}
+
+.toggle2 {
 	display: none;
 }
 
@@ -351,8 +361,21 @@ input[type=checkbox]:checked:after {
     	color:#000;
 }
 
+.lbl-toggle2 {
+	font-family:inherit;
+    	cursor:pointer;
+    	color:#878c99;
+		border-bottom: 1px dotted #000;
+		text-decoration: none;
+		border-color:#878c99; 
+}
+
 .lbl-toggle:hover {
 	background:#DDD;
+}
+
+.lbl-toggle2:hover {
+	color:#CCC;
 }
 
 .toggle:checked + .lbl-toggle + .content {
@@ -360,9 +383,14 @@ input[type=checkbox]:checked:after {
 	margin-top: 5px;
 }
 
+.toggle2:checked + .lbl-toggle2 + .changelog {
+	display: block;
+	margin-top: 5px;
+}
+
 .wrap-collapsible {
 	margin-top: 20px;
-	margin-bottom: 30px;
+	margin-bottom: 25px;
 }
 
 @media (max-width:750px) {
@@ -415,6 +443,31 @@ input[type=checkbox]:checked:after {
 
 .secret input{
 	opacity: 0.3;
+}
+
+.changelog ul {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 0;
+	margin-top: 0;
+}
+
+.changelog li {
+	padding-left: 1em;
+	text-indent: -1em;
+}
+
+.changelog li:before {
+	content: "-";
+	padding-right: 5px;
+}
+
+.filler {
+	margin-top: 15px;
+}
+
+.emp {
+	color:#5daac7;
 }
 
 </style>
@@ -522,19 +575,19 @@ function toggle2(source) {
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="babel">Babel</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="bolivar">Bolívar</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="columbia">Columbia<span class="tooltip">includes Blacksteel and Rhine Lab</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="followers">Followers</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="higashi">Higashi</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="iberia">Iberia</label>
-<label class="explain"><input type="checkbox" name="factions" class="factions" value="kazimierz">Kazimierz<span class="tooltip">includes Pinus Sylvestris</span></label>
-<label class="explain"><input type="checkbox" name="factions" class="factions" value="kjerag">Kjerag<span class="tooltip2">includes Karlan Trade</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="kazimierz">Kazimierz<span class="tooltip2">includes Pinus Sylvestris</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="kjerag">Kjerag<span class="tooltip">includes Karlan Trade</span></label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="laterano">Laterano</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="leithanien">Leithanian</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="lungmen">Lungmen<span class="tooltip">includes Lee's Detective Agency, LGD, and Penguin Logistics</span></label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="minos">Minos</label>
-<label class="explain"><input type="checkbox" name="factions" class="factions" value="rhodes">Rhodes Island<span class="tooltip">includes Followers and SWEEP</span></label>
+<label class="explain"><input type="checkbox" name="factions" class="factions" value="rhodes">Rhodes Island<span class="tooltip">includes SWEEP</span></label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="rim">Rim Billiton</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="sami">Sami</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="sargon">Sargon</label>
-<label class="explain"><input type="checkbox" name="factions" class="factions" value="siesta">Siesta</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="siracusa">Siracusa</label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="ursus">Ursus<span class="tooltip">includes Ursus Student Self-Governing Group</span></label>
 <label class="explain"><input type="checkbox" name="factions" class="factions" value="victoria">Victoria<span class="tooltip">includes Dublinn and Glasgow</span></label>
@@ -547,6 +600,27 @@ function toggle2(source) {
 <div class="secret"><p>
 <label>??? <input type="checkbox" id="octo"></label>
 </p></div>
+</div>
+</div>
+<div class="wrap-collapsible">
+	<input id="collapsible2" class="toggle2" type="checkbox">
+	<label for="collapsible2" class="lbl-toggle2">Show Changelog</label>
+<div class="changelog">
+<div class="filler"></div>
+
+<b>3-7-2023</b>
+<ul>
+	<li>Initial release</li>
+</ul>
+
+<b>3-8-2023</b>
+<ul>
+	<li>Fixed faction designation of <span class="emp">Vanilla</span> and <span class="emp">Plume</span></li>
+	<li>Made <span class="emp">Siesta</span> a subfaction of <span class="emp">Columbia</span></li>
+	<li>Made <span class="emp">Followers</span> an independent faction instead of a subfaction of <span class="emp">Rhodes Island</span></li>
+	<li>Added changelog</li>
+</ul>
+
 </div>
 </div>
 </div>
@@ -594,11 +668,11 @@ var items = [
 	{id: 'melantha', name: 'Melantha', image: 'images/three/melantha.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'three', alter: false, collab: false},
 	{id: 'midnight', name: 'Midnight', image: 'images/three/midnight.png', gender: 'male', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'three', alter: false, collab: false},
 	{id: 'orchid', name: 'Orchid', image: 'images/three/orchid.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'three', alter: false, collab: false},
-	{id: 'plume', name: 'Plume', image: 'images/three/plume.png', gender: 'female', cn: false, race: 'liberi', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'plume', name: 'Plume', image: 'images/three/plume.png', gender: 'female', cn: false, race: 'liberi', faction: 'laterano', rank: 'three', alter: false, collab: false},
 	{id: 'popukar', name: 'Popukar', image: 'images/three/popukar.png', gender: 'female', cn: false, race: 'cautus', faction: 'rhodes', rank: 'three', alter: false, collab: false},
 	{id: 'spot', name: 'Spot', image: 'images/three/spot.png', gender: 'male', cn: false, race: 'rebbah', faction: 'rhodes', rank: 'three', alter: false, collab: false},
 	{id: 'steward', name: 'Steward', image: 'images/three/steward.png', gender: 'male', cn: false, race: 'vulpo', faction: 'rhodes', rank: 'three', alter: false, collab: false},
-	{id: 'vanilla', name: 'Vanilla', image: 'images/three/vanilla.png', gender: 'female', cn: false, race: 'vouivre', faction: 'rhodes', rank: 'three', alter: false, collab: false},
+	{id: 'vanilla', name: 'Vanilla', image: 'images/three/vanilla.png', gender: 'female', cn: false, race: 'vouivre', faction: 'columbia', rank: 'three', alter: false, collab: false},
 	
 	/* four star release */
 	{id: 'courier', name: 'Courier', image: 'images/four/courier.png', gender: 'male', cn: false, race: 'other', faction: 'kjerag', rank: 'four', alter: false, collab: false},
@@ -677,7 +751,7 @@ var items = [
 	{id: 'nothing', name: 'Mr. Nothing', image: 'images/five2/nothing.png', gender: 'male', cn: false, race: 'liberi', faction: 'yan', rank: 'five', alter: false, collab: false},
 	{id: 'puzzle', name: 'Puzzle', image: 'images/five2/puzzle.png', gender: 'male', cn: true, race: 'vouivre', faction: 'victoria', rank: 'five', alter: false, collab: false},
 	{id: 'qanipalaat', name: 'Qanipalaat', image: 'images/five2/qanipalaat.png', gender: 'male', cn: true, race: 'vulpo', faction: 'sami', rank: 'five', alter: false, collab: false},
-	{id: 'rathalos', name: 'Rathalos S Noir Corne', image: 'images/five2/rathalos.png', gender: 'male', cn: true, race: 'oni', faction: 'other', rank: 'five', alter: true, collab: false},
+	{id: 'rathalos', name: 'Rathalos S Noir Corne', image: 'images/five/rathalos.png', gender: 'male', cn: true, race: 'oni', faction: 'other', rank: 'five', alter: true, collab: false},
 	{id: 'sesa', name: 'Sesa', image: 'images/five2/sesa.png', gender: 'male', cn: false, race: 'vouivre', faction: 'sargon', rank: 'five', alter: false, collab: false},
 	{id: 'shalem', name: 'Shalem', image: 'images/five2/shalem.png', gender: 'male', cn: false, race: 'pythia', faction: 'victoria', rank: 'five', alter: false, collab: false},
 	{id: 'sharp', name: 'Sharp', image: 'images/five2/sharp.png', gender: 'male', cn: false, race: 'pythia', faction: 'rhodes', rank: 'five', alter: false, collab: false},
@@ -700,7 +774,7 @@ var items = [
 	{id: 'manticore', name: 'Manticore', image: 'images/five/manticore.png', gender: 'female', cn: false, race: 'other', faction: 'sargon', rank: 'five', alter: false, collab: false},
 	{id: 'mayer', name: 'Mayer', image: 'images/five/mayer.png', gender: 'female', cn: false, race: 'anaty', faction: 'columbia', rank: 'five', alter: false, collab: false},
 	{id: 'meteorite', name: 'Meteorite', image: 'images/five/meteorite.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'five', alter: false, collab: false},
-	{id: 'nearl', name: 'Nearl', image: 'images/five/nearl.png', gender: 'female', cn: false, race: 'kuranta', faction: 'rhodes', rank: 'five', alter: false, collab: false},
+	{id: 'nearl', name: 'Nearl', image: 'images/five/nearl.png', gender: 'female', cn: false, race: 'kuranta', faction: 'followers', rank: 'five', alter: false, collab: false},
 	{id: 'nightmare', name: 'Nightmare', image: 'images/five/nightmare.png', gender: 'female', cn: false, race: 'feline', faction: 'victoria', rank: 'five', alter: false, collab: false},
 	{id: 'platinum', name: 'Platinum', image: 'images/five/platinum.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'five', alter: false, collab: false},
 	{id: 'poison', name: 'Blue Poison', image: 'images/five/poison.png', gender: 'female', cn: false, race: 'other', faction: 'iberia', rank: 'five', alter: false, collab: false},
@@ -722,7 +796,7 @@ var items = [
 	{id: 'grani', name: 'Grani', image: 'images/five/grani.png', gender: 'female', cn: false, race: 'kuranta', faction: 'kazimierz', rank: 'five', alter: false, collab: false},
 	{id: 'swire', name: 'Swire', image: 'images/five/swire.png', gender: 'female', cn: false, race: 'feline', faction: 'lungmen', rank: 'five', alter: false, collab: false},
 	{id: 'glaucus', name: 'Glaucus', image: 'images/five/glaucus.png', gender: 'female', cn: false, race: 'unknown', faction: 'iberia', rank: 'five', alter: false, collab: false},
-	{id: 'ceylon', name: 'Ceylon', image: 'images/five/ceylon.png', gender: 'female', cn: false, race: 'liberi', faction: 'siesta', rank: 'five', alter: false, collab: false},
+	{id: 'ceylon', name: 'Ceylon', image: 'images/five/ceylon.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'five', alter: false, collab: false},
 	{id: 'astesia', name: 'Astesia', image: 'images/five/astesia.png', gender: 'female', cn: false, race: 'liberi', faction: 'columbia', rank: 'five', alter: false, collab: false},
 	{id: 'breeze', name: 'Breeze', image: 'images/five/breeze.png', gender: 'female', cn: false, race: 'vulpo', faction: 'victoria', rank: 'five', alter: false, collab: false},
 	{id: 'waai', name: 'Waai Fu', image: 'images/five/waai.png', gender: 'female', cn: false, race: 'feline', faction: 'lungmen', rank: 'five', alter: false, collab: false},
@@ -810,13 +884,13 @@ var items = [
 	{id: 'mountain', name: 'Mountain', image: 'images/six/mountain.png', gender: 'male', cn: false, race: 'feline', faction: 'columbia', rank: 'six', alter: false, collab: false},
 	{id: 'mudrock', name: 'Mudrock', image: 'images/six/mudrock.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'six', alter: false, collab: false},
 	{id: 'nian', name: 'Nian', image: 'images/six/nian.png', gender: 'female', cn: false, race: 'feranmut', faction: 'yan', rank: 'six', alter: false, collab: false},
-	{id: 'nightingale', name: 'Nightingale', image: 'images/six/nightingale.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'nightingale', name: 'Nightingale', image: 'images/six/nightingale.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'followers', rank: 'six', alter: false, collab: false},
 	{id: 'phantom', name: 'Phantom', image: 'images/six/phantom.png', gender: 'male', cn: false, race: 'feline', faction: 'victoria', rank: 'six', alter: false, collab: false},
 	{id: 'rosa', name: 'Rosa', image: 'images/six/rosa.png', gender: 'female', cn: false, race: 'ursus', faction: 'ursus', rank: 'six', alter: false, collab: false},
 	{id: 'rosmontis', name: 'Rosmontis', image: 'images/six/rosmontis.png', gender: 'female', cn: false, race: 'feline', faction: 'rhodes', rank: 'six', alter: false, collab: false},
 	{id: 'saria', name: 'Saria', image: 'images/six/saria.png', gender: 'female', cn: false, race: 'vouivre', faction: 'columbia', rank: 'six', alter: false, collab: false},
-	{id: 'schwarz', name: 'Schwarz', image: 'images/six/schwarz.png', gender: 'female', cn: false, race: 'feline', faction: 'siesta', rank: 'six', alter: false, collab: false},
-	{id: 'shining', name: 'Shining', image: 'images/six/shining.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'rhodes', rank: 'six', alter: false, collab: false},
+	{id: 'schwarz', name: 'Schwarz', image: 'images/six/schwarz.png', gender: 'female', cn: false, race: 'feline', faction: 'columbia', rank: 'six', alter: false, collab: false},
+	{id: 'shining', name: 'Shining', image: 'images/six/shining.png', gender: 'female', cn: false, race: 'sarkaz', faction: 'followers', rank: 'six', alter: false, collab: false},
 	{id: 'siege', name: 'Siege', image: 'images/six/siege.png', gender: 'female', cn: false, race: 'other', faction: 'victoria', rank: 'six', alter: false, collab: false},
 	{id: 'silverash', name: 'SilverAsh', image: 'images/six/silverash.png', gender: 'male', cn: false, race: 'feline', faction: 'kjerag', rank: 'six', alter: false, collab: false},
 	{id: 'skadi', name: 'Skadi', image: 'images/six/skadi.png', gender: 'female', cn: false, race: 'aegir', faction: 'aegir', rank: 'six', alter: false, collab: false},
@@ -863,7 +937,7 @@ var items = [
 	{id: 'reedalter', name: 'Reed the Flame Shadow', image: 'images/six/reedalter.png', gender: 'female', cn: true, race: 'draco', faction: 'victoria', rank: 'six', alter: true, collab: false},
 	{id: 'lin', name: 'Lin', image: 'images/six/lin.png', gender: 'female', cn: true, race: 'zalak', faction: 'lungmen', rank: 'six', alter: false, collab: false},
 	{id: 'chongyue', name: 'Chongyue', image: 'images/six/chongyue.png', gender: 'male', cn: true, race: 'feranmut', faction: 'yan', rank: 'six', alter: false, collab: false},
-	{id: 'qiubai', name: 'Qiubai', image: 'images/six/qiubai.png', gender: 'female', cn: true, race: 'elafia', faction: 'yan', rank: 'six', alter: false, collab: false},
+	{id: 'qiubai', name: 'Qiubai', image: 'images/six/qubai.png', gender: 'female', cn: true, race: 'elafia', faction: 'yan', rank: 'six', alter: false, collab: false},
 
 	{id: 'squishy', name: 'Squishy', image: 'images/five2/squishy.png', gender: 'male', cn: true, race: 'other', faction: 'rhodes', rank: 'five', alter: true, collab: true, octo: true},
 	
@@ -881,7 +955,7 @@ var myPicker = new picker.Picker({
 		includeCollab: false,
 		includeSecret: false,
 		races: ['aegir', 'anaty', 'archosauria', 'caprinae', 'cautus', 'draco', 'durin', 'elafia', 'feline', 'feranmut', 'forte', 'kuranta', 'liberi', 'lung', 'lupo', 'oni', 'perro', 'pythia', 'rebbah', 'sankta', 'sarkaz', 'savra', 'ursus', 'vouivre', 'vulpo', 'zalak', 'unknown', 'other'],
-		factions: ['aegir', 'babel', 'bolivar', 'columbia', 'higashi', 'iberia', 'kazimierz', 'kjerag', 'laterano', 'leithanien', 'lungmen', 'minos', 'rhodes', 'rim', 'sami', 'sargon', 'siesta', 'siracusa', 'ursus', 'victoria', 'yan', 'other']
+		factions: ['aegir', 'babel', 'bolivar', 'columbia', 'followers', 'higashi', 'iberia', 'kazimierz', 'kjerag', 'laterano', 'leithanien', 'lungmen', 'minos', 'rhodes', 'rim', 'sami', 'sargon', 'siracusa', 'ursus', 'victoria', 'yan', 'other']
     },
     shouldIncludeItem: function(item, settings) {
         // Include only if:
